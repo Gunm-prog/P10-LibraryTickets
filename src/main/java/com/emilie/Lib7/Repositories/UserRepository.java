@@ -1,5 +1,6 @@
 package com.emilie.Lib7.Repositories;
 
+import com.emilie.Lib7.Models.Dtos.UserDto;
 import com.emilie.Lib7.Models.Entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -11,9 +12,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findById(Long id);
     Optional<User> findByEmail(String email);
-  /*  Optional<User> save(String email);*/
+   /*User user save(User user);*/
 
      Optional<User> findByLastName(String lastName);
 
-    /*void deleteById(Long id);*/
+
+
+
+
 }

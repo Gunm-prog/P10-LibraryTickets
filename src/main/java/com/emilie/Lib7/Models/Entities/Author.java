@@ -2,6 +2,7 @@ package com.emilie.Lib7.Models.Entities;
 
 
 import com.emilie.Lib7.Models.Dtos.AuthorDto;
+import com.sun.istack.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -23,17 +24,19 @@ public class Author implements Serializable{
     @Column(name="author_id")
     private Long authorId;
 
+    @NotNull
     @Column(name="first_name")
     private String firstName;
 
+    @NotNull
     @Column(name="last_name")
     private String lastName;
 
     @OneToMany(mappedBy="author")
     private Set<Book> books;
 
-    public void setId(Long id) {
-    }
+    /*public void setId(Long id) {
+    }*/
 
 
 }

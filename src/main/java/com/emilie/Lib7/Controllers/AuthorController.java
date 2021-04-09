@@ -17,8 +17,7 @@ import java.util.List;
 @RequestMapping("/api/v1/authors")
 public class AuthorController {
 
-    private  AuthorsService authorsService;
-    private  BookService bookService;
+    private final AuthorsService authorsService;
     private Author authorDto;
 
 
@@ -26,11 +25,10 @@ public class AuthorController {
     public AuthorController(AuthorsService authorsService, BookService bookService){
 
         this.authorsService=authorsService;
-        this.bookService=bookService;
     }
 
     @ApiOperation( value="Retrieve userlist from database" )
-    @GetMapping("/author-list")
+    @GetMapping("/list")
     public List<AuthorDto> findAll(){
         return this.authorsService.findAll();
     }
@@ -41,12 +39,12 @@ public class AuthorController {
         return this.authorsService.findById( id );
     }
 
-    @GetMapping("/author-firstName")
-    public AuthorDto getFirstName(String firstName){
+    @GetMapping("/{first-name}")
+    public AuthorDto getFirstName(@PathVariable(value="first-name") String firstName){
         return this.authorsService.findByFirstName(firstName);
     }
 
-    @GetMapping("/author-lastName")
+    @GetMapping("/last-name")
     public AuthorDto getLastName(String lastName){
         return this.authorsService.findByLastName( lastName );
     }

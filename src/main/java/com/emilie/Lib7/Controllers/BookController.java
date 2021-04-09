@@ -22,18 +22,15 @@ import java.util.List;
 @RequestMapping("/api/v1/books")
 public class BookController {
 
-    private  BookService bookService;
-    private  LibraryService libraryService;
+    private final BookService bookService;
     private BookDto bookDto;
     private AuthorDto authorDto;
 
 
     @Autowired
-    public BookController(BookService bookService,/*,
-                          LibraryService libraryService*/LibraryService libraryService){
+    public BookController(BookService bookService,
+                          LibraryService libraryService){
         this.bookService=bookService;
-       /* this.libraryService=libraryService;*/
-        this.libraryService=libraryService;
     }
 
     @ApiOperation( value="Retrieve the booklist which is registered in database" )
@@ -43,14 +40,14 @@ public class BookController {
     }
 
     @ApiOperation( value="Retrieve a book by its title, if it is registered in database" )
-    @GetMapping("/book-title")
-    public BookDto findByTitle(@PathVariable(value="title") String title) throws BookNotFoundException {
+    @GetMapping("/title/{title }")
+    public BookDto findByTitle(@PathVariable String title) throws BookNotFoundException {
         /*bookDto.setTitle( title );*/
         return this.bookService.findByTitle( title);
     }
 
    @ApiOperation(value="Retrieve a booklist by author's name, if it is registered")
-    @GetMapping("/author")
+    @GetMapping("/author/{author}")
     public BookDto findByAuthor(@PathVariable(value="author") Author author){
         bookDto.setAuthorDto( authorDto );
         return this.bookService.findByAuthor(author);

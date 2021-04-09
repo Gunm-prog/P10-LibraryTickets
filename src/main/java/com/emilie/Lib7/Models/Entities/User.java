@@ -17,20 +17,20 @@ public class User implements Serializable {
     public static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id")
     private Long userId;
 
     @Column(name="last_name", nullable=false)
     private String lastName;
 
-    @Column(name="fist_name", nullable=false)
+    @Column(name="first_name", nullable=false)
     private String firstName;
 
-    @Column(name="userName", nullable=false)
+    @Column(name="user_name", nullable=false)
     private String userName;
 
-    @Column(name="email", length=50, unique=true/*, nullable=false*/)
+    @Column(name="email", length=50, unique=true, nullable=false)
     private String email;
 
    /* @Column(name="cardNumber", length=50, unique=true, nullable=false)
