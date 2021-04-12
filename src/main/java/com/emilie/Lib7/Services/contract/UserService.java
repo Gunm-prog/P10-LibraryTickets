@@ -11,20 +11,18 @@ public interface UserService {
 
     UserDto findById(Long id) throws UserNotFoundException;
 
+
     UserDto save(UserDto userDto) throws UserAlreadyExistException;
 
-    UserDto findByLastName (String lastName) throws UserNotFoundException;
+    UserDto findByLastName(String lastName) throws UserNotFoundException;
 
-    UserDto findByEmail (String email) throws UserNotFoundException;
+    UserDto findByEmail(String email) throws UserNotFoundException;
 
     List<UserDto> findAll();
 
     boolean deleteById(Long id) throws UserNotFoundException;
 
-    UserDto update(UserDto userDto) ;
-
- /*   UserDto deleteById(Long id);
+    UserDto update(UserDto userDto);
 
 
-    UserDto findByCardNumber(String cardNumber);*/
 }

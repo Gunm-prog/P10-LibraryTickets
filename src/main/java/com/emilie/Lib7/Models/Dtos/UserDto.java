@@ -1,17 +1,16 @@
 package com.emilie.Lib7.Models.Dtos;
 
-import com.emilie.Lib7.Models.Entities.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.joda.time.DateTime;
+
 
 import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
-public class UserDto  implements Serializable {
+public class UserDto implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID=1L;
 
     private Long id;
     private String lastName;

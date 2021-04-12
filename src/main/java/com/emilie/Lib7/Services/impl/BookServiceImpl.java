@@ -2,8 +2,10 @@ package com.emilie.Lib7.Services.impl;
 
 
 
+import com.emilie.Lib7.Exceptions.BookAlreadyExistException;
 import com.emilie.Lib7.Exceptions.BookNotFoundException;
 import com.emilie.Lib7.Models.Dtos.BookDto;
+import com.emilie.Lib7.Models.Dtos.UserDto;
 import com.emilie.Lib7.Models.Entities.Author;
 import com.emilie.Lib7.Models.Entities.Book;
 import com.emilie.Lib7.Repositories.BookRepository;
@@ -55,10 +57,46 @@ public class BookServiceImpl implements BookService {
         if (!optionalBook.isPresent()) {
             throw new BookNotFoundException( "Book not found" );
         }
-        Book book=optionalBook.get();
+        Book book = optionalBook.get();
+        return bookToBookDto( book );
+       /* Book book=optionalBook.get();
         BookDto bookDto=new BookDto();
         bookDto.setBookId( book.getBookId() );
-        return bookDto;
+        return bookDto;*/
+    }
+
+    @Override
+    public BookDto save(BookDto bookDto) throws BookAlreadyExistException {
+        Optional<Book> optionalBook = bookRepository.findById( bookDto.getBookId() );
+        if (optionalBook.isPresent()){
+            throw new BookAlreadyExistException( "book already exists" );
+        }
+        Book book =  bookDtoTobook( bookDto );
+        book = bookRepository.save(book);
+
+        return bookToBookDto( book );
+    }
+
+    @Override
+    public BookDto update(BookDto bookDto){
+        Optional<Book> optionalBook = bookRepository.findById( bookDto.getBookId() );
+        Book book = bookDtoTobook( bookDto );
+        book = bookRepository.save(book);
+        return bookToBookDto( book );
+    }
+
+    @Override
+    public boolean deleteById(Long id) throws BookNotFoundException{
+        Optional<Book> optionalBook = bookRepository.findById( id );
+        if (!optionalBook.isPresent()){
+            throw new BookNotFoundException( "book not found" );
+        }
+        try{
+            bookRepository.deleteById( id );
+        }catch (Exception e){
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -68,8 +106,7 @@ public class BookServiceImpl implements BookService {
             throw new BookNotFoundException( "books not found" );
         }
         Book book=optionalBook.get();
-        BookDto bookDto=new BookDto();
-        bookDto.setTitle( book.getTitle() );
+        BookDto bookDto = this.bookToBookDto( book );
         return bookDto;
     }
 
@@ -80,11 +117,30 @@ public class BookServiceImpl implements BookService {
             throw new BookNotFoundException( "book not found" );
         }
         Book book=optionalBook.get();
-        BookDto bookDto=new BookDto();
-        bookDto.setAuthor( author );
+        BookDto bookDto = this.bookToBookDto( book );
         return bookDto;
 
         /*return this.bookRepository.findByAuthor(author);*/
+    }
+
+    private BookDto bookToBookDto(Book book){
+        BookDto bookDto = new BookDto();
+        bookDto.setBookId( book.getBookId() );
+        bookDto.setTitle( book.getTitle() );
+        bookDto.setIsbn( book.getIsbn() );
+        bookDto.setSummary( book.getSummary() );
+        bookDto.setAuthor( book.getAuthor() );
+        return bookDto;
+    }
+
+    private Book bookDtoTobook(BookDto bookDto){
+        Book book = new Book();
+        book.setBookId( bookDto.getBookId() );
+        book.setTitle( bookDto.getTitle() );
+        book.setIsbn( bookDto.getIsbn() );
+        book.setSummary( bookDto.getSummary() );
+        book.setAuthor( bookDto.getAuthor() );
+        return book;
     }
 
 

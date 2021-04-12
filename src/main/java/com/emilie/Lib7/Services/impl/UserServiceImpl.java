@@ -20,80 +20,57 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository){
-        this.userRepository = userRepository;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository=userRepository;
     }
 
 
 
-    // Les méthodes ci-dessous sont en private, parce qu'elles ne sont pas destiné à être utilisé en dehors de la class UserServiceImpl.
-    // mais uniquement par elle même. Pour les utilisés, il faut utilisé le mot clef this.NomDeMéthode.
-    // Le this, fait référence l'instance qui est exécuté. donc ici UserServiceImpl
-    // de sorte que this.userToDto( unUser ) placé dans une méthode de UserServiceImpl, appelera la méthode ci-dessous
-    private UserDto userToUserDto(User user){
-        UserDto userDto = new UserDto();
-        userDto.setId( user.getUserId() );
-        userDto.setUserName( user.getUserName() );
-        userDto.setEmail( user.getEmail() );
-        userDto.setLastName( user.getLastName() );
-        userDto.setFirstName( user.getFirstName() );
-        return userDto;
-    }
-
-    private User userDtoToUser(UserDto userDto){
-        User user = new User();
-        user.setUserId( userDto.getId() );
-        user.setUserName( userDto.getUserName() );
-        user.setEmail( userDto.getEmail() );
-        user.setFirstName( userDto.getFirstName() );
-        user.setLastName( userDto.getLastName() );
-        return user;
-    }
 
     @Override
     public UserDto findById(Long id) throws UserNotFoundException {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (!optionalUser.isPresent()){
-            throw new UserNotFoundException("User not found");
+        Optional<User> optionalUser=userRepository.findById( id );
+        if (!optionalUser.isPresent()) {
+            throw new UserNotFoundException( "User not found" );
         }
-        User user = optionalUser.get();
+        User user=optionalUser.get();
         /*UserDto userDto1= new UserDto();*/
         /*userDto.setLastName( user.getLastName() ); //récupération info user pour les mettre dans userDto/transvasage*/
         return userToUserDto( user );
     }
 
     @Override
-    public UserDto save (UserDto userDto) throws UserAlreadyExistException {
+    public UserDto save(UserDto userDto) throws UserAlreadyExistException {
         Optional<User> optionalUser=userRepository.findByEmail( userDto.getEmail() );
         if (optionalUser.isPresent()) {
             throw new UserAlreadyExistException( "Email already exists" );
         }
-        User user = userDtoToUser( userDto );
-        userRepository.save( user );
+        User user=userDtoToUser( userDto );
+        user=userRepository.save( user );
 
-        return userToUserDto(user);
+        return userToUserDto( user );
     }
 
     @Override
     public UserDto update(UserDto userDto) {
         Optional<User> optionalUser=userRepository.findById( userDto.getId() );
-        User user = userDtoToUser( userDto );
-        userRepository.save(user);
+        User user=userDtoToUser( userDto );
+        user=userRepository.save( user );
         return userToUserDto( user );
     }
 
 
     @Override
-    public  boolean deleteById(Long id) throws UserNotFoundException{
-        Optional<User> optionalUser  = userRepository.findById(id );
-        if (!optionalUser.isPresent()){
+    public boolean deleteById(Long id) throws UserNotFoundException {
+        Optional<User> optionalUser=userRepository.findById( id );
+        if (!optionalUser.isPresent()) {
             throw new UserNotFoundException( "user not found" );
         }
-         try{
-             userRepository.deleteById( id );
-         }catch (Exception e){
-             return false;
-         }
+        try {
+            userRepository.deleteById( id );
+        } catch (Exception e) {
+            return false;
+        }
 
         return true;
     }
@@ -117,18 +94,14 @@ public class UserServiceImpl implements UserService {
         }*/
 
 
-
-
-
-
     @Override
-    public UserDto findByLastName(String lastName) throws UserNotFoundException{
-        Optional<User> optionalUser = userRepository.findByLastName( lastName );
-        if (!optionalUser.isPresent()){
-           throw new UserNotFoundException( "User not found" );
+    public UserDto findByLastName(String lastName) throws UserNotFoundException {
+        Optional<User> optionalUser=userRepository.findByLastName( lastName );
+        if (!optionalUser.isPresent()) {
+            throw new UserNotFoundException( "User not found" );
         }
-        User user = optionalUser.get();
-        UserDto userDto = new UserDto();
+        User user=optionalUser.get();
+        UserDto userDto=new UserDto();
         userDto.setLastName( user.getLastName() );
         userDto.setEmail( user.getEmail() );
         userDto.setUserName( user.getUserName() );
@@ -138,12 +111,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findByEmail(String email) throws UserNotFoundException {
-        Optional<User> optionalUser = userRepository.findByEmail( email );
-        if (!optionalUser.isPresent()){
+        Optional<User> optionalUser=userRepository.findByEmail( email );
+        if (!optionalUser.isPresent()) {
             throw new UserNotFoundException( "User not found" );
         }
-        User user =optionalUser.get();
-        UserDto userDto = this.userToUserDto( user );
+        User user=optionalUser.get();
+        UserDto userDto=this.userToUserDto( user );
         //Au lieu de placé le retour de la méthode userToUserDto dans une variable userDto, on peut aussi directement le retourner
         //a voir selon préférence.
 
@@ -164,6 +137,29 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> findAll() {
         return null;
+    }
+    // Les méthodes ci-dessous sont en private, parce qu'elles ne sont pas destinées à être utilisées en dehors de la class UserServiceImpl.
+    // mais uniquement par elle-mêmes. Pour les utiliser, il faut utiliser le mot-clef this.NomDeMéthode.
+    // Le this, fait référence à l'instance qui est exécutée. donc ici UserServiceImpl
+    // de sorte que this.userToDto( unUser ) placé dans une méthode de UserServiceImpl, appelera la méthode ci-dessous
+    private UserDto userToUserDto(User user) {
+        UserDto userDto=new UserDto();
+        userDto.setId( user.getUserId() );
+        userDto.setUserName( user.getUserName() );
+        userDto.setEmail( user.getEmail() );
+        userDto.setLastName( user.getLastName() );
+        userDto.setFirstName( user.getFirstName() );
+        return userDto;
+    }
+
+    private User userDtoToUser(UserDto userDto) {
+        User user=new User();
+        user.setUserId( userDto.getId() );
+        user.setUserName( userDto.getUserName() );
+        user.setEmail( userDto.getEmail() );
+        user.setFirstName( userDto.getFirstName() );
+        user.setLastName( userDto.getLastName() );
+        return user;
     }
 
 }

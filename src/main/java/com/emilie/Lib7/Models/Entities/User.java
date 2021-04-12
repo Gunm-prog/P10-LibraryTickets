@@ -1,9 +1,9 @@
 package com.emilie.Lib7.Models.Entities;
 
-import com.emilie.Lib7.Models.Dtos.UserDto;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.joda.time.DateTime;
+
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,7 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class User implements Serializable {
 
-    public static final long serialVersionUID = 1L;
+    public static final long serialVersionUID=1L;
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -45,7 +45,6 @@ public class User implements Serializable {
 
 
 */
-
 
 
 }

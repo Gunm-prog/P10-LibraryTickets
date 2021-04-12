@@ -1,5 +1,7 @@
 package com.emilie.Lib7.Models.Entities;
 
+import com.emilie.Lib7.Models.Dtos.BookDto;
+import com.emilie.Lib7.Models.Dtos.LibraryDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -29,6 +31,9 @@ public class Copy implements Serializable {
     @ManyToOne
     @JoinColumn(name="library_id", nullable=false)
     private Library library;
+
+    private BookDto bookDto;
+    private LibraryDto libraryDto;
 
 }
 

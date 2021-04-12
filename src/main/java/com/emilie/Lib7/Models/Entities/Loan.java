@@ -18,7 +18,7 @@ public class Loan implements Serializable {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="loan_id")
-    private Long loanId;
+    private Long Id;
 
     @ManyToOne
     @JoinColumn(name="copy_id", nullable=false)
@@ -29,7 +29,7 @@ public class Loan implements Serializable {
     private User user;
 
     @Column(name="loan_date", nullable=false)
-    private DateTime loanDate;
+    private DateTime loanStartDate;
 
     @Column(name="loan_end_date")
     private DateTime loanEndDate;
@@ -38,7 +38,7 @@ public class Loan implements Serializable {
     private boolean extended;
 
     @Column(name="loan_status", nullable=false)
-    private Boolean loanStatus;
+    private boolean loanStatus; //Boolean???
 
 
 
