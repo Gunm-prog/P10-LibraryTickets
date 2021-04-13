@@ -1,5 +1,6 @@
 package com.emilie.Lib7.Models.Dtos;
 
+import com.emilie.Lib7.Models.Entities.Book;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

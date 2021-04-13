@@ -4,10 +4,12 @@ import com.emilie.Lib7.Exceptions.CopyAlreadyExistException;
 import com.emilie.Lib7.Exceptions.CopyNotFoundException;
 import com.emilie.Lib7.Models.Dtos.CopyDto;
 import com.emilie.Lib7.Models.Entities.Copy;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface CopyService {
+public interface CopyService  {
 
     CopyDto findById(Long id) throws CopyNotFoundException;
 

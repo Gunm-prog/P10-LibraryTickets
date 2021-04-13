@@ -2,6 +2,7 @@ package com.emilie.Lib7.Models.Dtos;
 
 
 import com.emilie.Lib7.Models.Entities.Author;
+import com.emilie.Lib7.Models.Entities.Copy;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -24,6 +25,8 @@ public class BookDto implements Serializable/*, List<BookDto> */{
     private String summary;
     private AuthorDto authorDto;
     private Author author;
+    private CopyDto copyDto;
+    private Copy copy;
 
    /* @Override
     public int size() {

@@ -32,6 +32,8 @@ public class Copy implements Serializable {
     @JoinColumn(name="library_id", nullable=false)
     private Library library;
 
+
+
     private BookDto bookDto;
     private LibraryDto libraryDto;
 

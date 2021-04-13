@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name="book")
@@ -33,8 +34,8 @@ public class Book implements Serializable{
     private Author author;
 
     /*@OneToMany(mappedBy="book")
-    private Set<Copy> copies;
-*/
+    private Set<Copy> copies;*/
+
     /*@ManyToOne
     @JoinColumn(name="cover_id")
     private Cover cover;*/
