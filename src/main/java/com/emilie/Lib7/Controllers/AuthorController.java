@@ -1,15 +1,17 @@
 package com.emilie.Lib7.Controllers;
 
+import com.emilie.Lib7.Exceptions.AuthorAlreadyExistException;
+import com.emilie.Lib7.Exceptions.AuthorNotFoundException;
 import com.emilie.Lib7.Models.Dtos.AuthorDto;
 import com.emilie.Lib7.Models.Entities.Author;
+import com.emilie.Lib7.Models.Entities.Book;
 import com.emilie.Lib7.Services.contract.AuthorsService;
 import com.emilie.Lib7.Services.contract.BookService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,31 +24,52 @@ public class AuthorController {
 
 
     @Autowired
-    public AuthorController(AuthorsService authorsService, BookService bookService){
+    public AuthorController(AuthorsService authorsService){
 
         this.authorsService=authorsService;
+
     }
 
     @ApiOperation( value="Retrieve userlist from database" )
     @GetMapping("/list")
-    public List<AuthorDto> findAll(){
-        return this.authorsService.findAll();
+    public ResponseEntity<List<AuthorDto>> findAll(){
+        List<AuthorDto> authorDtos = authorsService.findAll();
+        return new ResponseEntity<List<AuthorDto>>(authorDtos, HttpStatus.OK  );
     }
 
     @ApiOperation( value="Retrieve an author by its id if existing in database" )
     @GetMapping("/{id}")
-    public AuthorDto getId(@PathVariable(value="id") Long id){
-        return this.authorsService.findById( id );
+    public ResponseEntity<AuthorDto> findById(@PathVariable(value="id") Long id){
+        AuthorDto authorDto = authorsService.findById( id );
+        return new ResponseEntity<AuthorDto>(authorDto, HttpStatus.OK  );
     }
 
-    @GetMapping("/{first-name}")
-    public AuthorDto getFirstName(@PathVariable(value="first-name") String firstName){
-        return this.authorsService.findByFirstName(firstName);
+
+    @PostMapping("/newAuthor")
+    public ResponseEntity<String> save(@RequestBody AuthorDto authorDto) throws AuthorAlreadyExistException{
+        authorsService.save( authorDto );
+        return ResponseEntity.status( HttpStatus.CREATED ).build();
     }
 
-    @GetMapping("/last-name")
-    public AuthorDto getLastName(String lastName){
-        return this.authorsService.findByLastName( lastName );
+    @PutMapping("/updateAuthor")
+    public ResponseEntity<AuthorDto> update(@RequestBody AuthorDto authorDto){
+        AuthorDto authorDto1 = authorsService.update( authorDto );
+        return new ResponseEntity<AuthorDto>(authorDto1, HttpStatus.OK  );
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable(value="id")Long id) throws AuthorNotFoundException{
+        if (authorsService.deleteById(id)){
+            return ResponseEntity.status( HttpStatus.OK ).build();
+        }else {
+            return ResponseEntity.status( 500 ).build();
+        }
+    }
+
+    @GetMapping("/lastName/{lastName}")
+    public ResponseEntity<AuthorDto> findByLastName(@PathVariable String lastName) throws AuthorNotFoundException {
+        AuthorDto authorDto=authorsService.findByLastName( lastName );
+        return new ResponseEntity<AuthorDto>(authorDto, HttpStatus.OK);
     }
 
 }

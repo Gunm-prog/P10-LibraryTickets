@@ -23,9 +23,7 @@ public class BookDto implements Serializable/*, List<BookDto> */{
     private String title;
     private String isbn;
     private String summary;
-    private AuthorDto authorDto;
     private Author author;
-    private CopyDto copyDto;
     private Copy copy;
 
    /* @Override

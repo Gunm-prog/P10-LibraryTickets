@@ -22,9 +22,9 @@ import java.util.Optional;
 public class BookServiceImpl implements BookService {
 
     private BookRepository bookRepository;
-    private BookService bookService;
 
-    private List<BookDto> bookDto;
+
+
 
     @Autowired
     public BookServiceImpl(BookRepository bookRepository) {
@@ -48,7 +48,7 @@ public class BookServiceImpl implements BookService {
             BookDto bookDto=new BookDto();
             bookDto.setTitle( book.getTitle() );
         }
-        return bookDto;
+        return bookDtos;
     }
 
     @Override

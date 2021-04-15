@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
 
     @Autowired
@@ -29,14 +29,16 @@ public class UserController {
 
     @ApiOperation(value="Retrieve a user account thanks to its Id, if the user is registered in database")
     @GetMapping("/{id}")
-    public UserDto getById(@PathVariable(value="id") Long id) throws UserNotFoundException {
-        return this.userService.findById( id );
+    public ResponseEntity<UserDto> findById(@PathVariable(value="id") Long id) throws UserNotFoundException {
+       UserDto userDto = userService.findById( id );
+       return new ResponseEntity<UserDto>(userDto, HttpStatus.OK  );
     }
 
     @ApiOperation(value="Retrieve user list from the database")
     @GetMapping("/userList")
-    public List<UserDto> findAll() {
-        return this.userService.findAll();
+    public ResponseEntity<List<UserDto>> findAll() {
+        List<UserDto> userDtos = userService.findAll();
+        return new ResponseEntity<List<UserDto>>(userDtos, HttpStatus.OK  );
     }
 
     @ApiOperation( value="Create an account saved in database containing the informations given by user" )
@@ -64,6 +66,7 @@ public class UserController {
 
     }
 
+    //TODO ResponseEntity
     @ApiOperation(value="Retrieve a user account thanks to its last name, if the user is registered in database")
     @GetMapping("/last-name/{last-name}")
     public UserDto getByLastName(@PathVariable(value="last-name") String lastName) throws UserNotFoundException {

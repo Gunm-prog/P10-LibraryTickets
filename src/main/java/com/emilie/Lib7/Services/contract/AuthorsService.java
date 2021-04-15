@@ -10,4 +10,7 @@ public interface AuthorsService {
     AuthorDto findById(Long id);
     AuthorDto findByFirstName(String firstName);
     AuthorDto findByLastName(String lastName);
+    AuthorDto save(AuthorDto authorDto);
+    AuthorDto update(AuthorDto authorDto);
+    boolean deleteById(Long id);
 }

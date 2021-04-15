@@ -2,9 +2,15 @@ package com.emilie.Lib7.Models.Entities;
 
 
 import com.emilie.Lib7.Models.Dtos.AuthorDto;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerator;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.sun.istack.NotNull;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,12 +21,14 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @Table(name="author")
+@EqualsAndHashCode(exclude="books")
+/*@JsonIdentityInfo( generator=ObjectIdGenerators.PropertyGenerator.class, property="id")*/
 public class Author implements Serializable{
 
     public static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="author_id")
     private Long authorId;
 
@@ -32,8 +40,10 @@ public class Author implements Serializable{
     @Column(name="last_name")
     private String lastName;
 
+
     @OneToMany(mappedBy="author")
-    private Set<Book> books;
+    @JsonIgnoreProperties("author")
+    private Set<Book> books ;
 
     /*public void setId(Long id) {
     }*/

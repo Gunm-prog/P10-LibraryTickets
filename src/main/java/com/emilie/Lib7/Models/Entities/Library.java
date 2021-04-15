@@ -1,6 +1,7 @@
 package com.emilie.Lib7.Models.Entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -31,9 +32,10 @@ public class Library implements Serializable {
     @JoinColumn(name="adress_id")
     private Address address;*/
 
-    /*@OneToMany(mappedBy="library")
+    @OneToMany(mappedBy="library")
+    @JsonIgnoreProperties("libraries")
     private Set<Copy> copies;
-*/
+
 
 
 }

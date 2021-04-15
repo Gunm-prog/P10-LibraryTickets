@@ -34,8 +34,9 @@ public class BookController {
 
     @ApiOperation( value="Retrieve a book by id, if registered in database" )
     @GetMapping("/{id}")
-    public BookDto getById(@PathVariable(value="id")Long id) throws BookNotFoundException{
-        return this.bookService.findById( id );
+    public ResponseEntity<BookDto> getById(@PathVariable(value="id")Long id) throws BookNotFoundException{
+        BookDto bookDto = bookService.findById( id );
+        return new ResponseEntity<BookDto>( bookDto, HttpStatus.OK );
     }
 
 
@@ -75,9 +76,10 @@ public class BookController {
 
     @ApiOperation( value="Retrieve a book by its title, if it is registered in database" )
     @GetMapping("/title/{title }")
-    public BookDto findByTitle(@PathVariable String title) throws BookNotFoundException {
+    public ResponseEntity<BookDto> findByTitle(@PathVariable String title) throws BookNotFoundException {
+        BookDto bookDto = bookService.findByTitle( title );
         /*bookDto.setTitle( title );*/
-        return this.bookService.findByTitle( title);
+        return new ResponseEntity<BookDto>(bookDto,HttpStatus.OK);
     }
 
 

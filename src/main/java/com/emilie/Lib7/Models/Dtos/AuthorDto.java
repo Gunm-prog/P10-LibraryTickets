@@ -6,6 +6,7 @@ import com.emilie.Lib7.Models.Entities.Book;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 public class AuthorDto implements Serializable {
@@ -15,8 +16,7 @@ public class AuthorDto implements Serializable {
     private Long authorId;
     private String firstName;
     private String lastName;
-    private BookDto bookDto;
-    private Book book;
+    private List<BookDto> books;
 
 
 

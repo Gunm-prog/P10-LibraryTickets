@@ -1,5 +1,7 @@
 package com.emilie.Lib7.Models.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
@@ -11,6 +13,7 @@ import java.io.Serializable;
 @Table(name="loan")
 @Data
 @NoArgsConstructor
+@JsonIdentityInfo( generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Loan implements Serializable {
 
  public static final long serialVersionUID = 1L;

@@ -2,10 +2,18 @@ package com.emilie.Lib7.Services.impl;
 
 import com.emilie.Lib7.Exceptions.CopyAlreadyExistException;
 import com.emilie.Lib7.Exceptions.CopyNotFoundException;
+import com.emilie.Lib7.Models.Dtos.BookDto;
 import com.emilie.Lib7.Models.Dtos.CopyDto;
+import com.emilie.Lib7.Models.Dtos.LibraryDto;
+import com.emilie.Lib7.Models.Entities.Book;
 import com.emilie.Lib7.Models.Entities.Copy;
+import com.emilie.Lib7.Models.Entities.Library;
+import com.emilie.Lib7.Repositories.BookRepository;
 import com.emilie.Lib7.Repositories.CopyRepository;
+import com.emilie.Lib7.Repositories.LibraryRepository;
+import com.emilie.Lib7.Services.contract.BookService;
 import com.emilie.Lib7.Services.contract.CopyService;
+import com.emilie.Lib7.Services.contract.LibraryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +24,15 @@ import java.util.Optional;
 public class CopyServiceImpl implements CopyService {
 
     private final CopyRepository copyRepository;
+    private final BookService bookServiceImpl;
+    private final LibraryService libraryServiceImpl;
 
 
     @Autowired
-    public CopyServiceImpl(CopyRepository copyRepository) {
+    public CopyServiceImpl(CopyRepository copyRepository, BookServiceImpl bookServiceImpl, LibraryServiceImpl libraryServiceImpl) {
         this.copyRepository=copyRepository;
+        this.bookServiceImpl=bookServiceImpl;
+        this.libraryServiceImpl=libraryServiceImpl;
     }
 
     @Override
@@ -83,20 +95,44 @@ public class CopyServiceImpl implements CopyService {
         CopyDto copyDto=new CopyDto();
         copyDto.setId( copy.getId() );
         copyDto.setAvailable( copy.isAvailable() );
-        copyDto.setBookDto( copy.getBookDto() );
-        copyDto.setLibraryDto( copy.getLibraryDto() );
+
+        BookDto bookDto = new BookDto();
+        bookDto.setBookId( copy.getBook().getBookId() );
+        bookDto.setTitle( copy.getBook().getTitle() );
+        bookDto.setIsbn( copy.getBook().getIsbn() );
+        bookDto.setSummary( copy.getBook().getSummary() );
+        bookDto.setAuthor( copy.getBook().getAuthor() );
+        copyDto.setBookDto( bookDto );
+
+        LibraryDto libraryDto = new LibraryDto();
+        //TODO faire libraryDto
+        copyDto.setLibraryDto( libraryDto );
+
         return copyDto;
     }
+
 
     private Copy copyDtoToCopy(CopyDto copyDto) {
         Copy copy=new Copy();
         copy.setId( copyDto.getId() );
         copy.setAvailable( copyDto.isAvailable() );
-        copy.setBookDto( copyDto.getBookDto() );
-        copy.setLibraryDto( copyDto.getLibraryDto() );
+
+        Book book = new Book();
+        book.setBookId(copyDto.getBookDto().getBookId());
+        book.setTitle(copyDto.getBookDto().getTitle());
+        book.setIsbn( copyDto.getBookDto().getIsbn() );
+        book.setSummary( copyDto.getBookDto().getSummary() );
+        book.setAuthor( copyDto.getBookDto().getAuthor() );
+        copy.setBook( book );
+
+        Library library = new Library();
+        //TODO faire Library
+        copy.setLibrary( library );
+
         return copy;
 
     }
+
 
 
 }

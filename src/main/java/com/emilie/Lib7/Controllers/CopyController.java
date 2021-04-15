@@ -25,14 +25,16 @@ public class CopyController {
 
     @ApiOperation( value="Retrieve copy by id, if registered in database" )
     @GetMapping("/{id}")
-    public CopyDto getById(@PathVariable(value="id") Long id) throws CopyNotFoundException{
-        return this.copyService.findById( id );
+    public ResponseEntity<CopyDto> getById(@PathVariable(value="id") Long id) throws CopyNotFoundException{
+        CopyDto copyDto = copyService.findById( id );
+        return new ResponseEntity<CopyDto>(copyDto, HttpStatus.OK  );
     }
 
     @ApiOperation( value="Retrieve copy list from database" )
     @GetMapping("/copyList")
-    public List<CopyDto> findAll(){
-        return this.copyService.findAll();
+    public ResponseEntity<List<CopyDto>> findAll(){
+        List<CopyDto> copyDtos = copyService.findAll();
+        return new ResponseEntity<List<CopyDto>>(copyDtos, HttpStatus.OK  );
     }
 
     @ApiOperation( value="Create a copy and save it in database" )

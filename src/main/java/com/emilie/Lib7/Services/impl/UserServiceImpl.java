@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
         return savedUser;
         }*/
 
-
+//TODO conversion methods
     @Override
     public UserDto findByLastName(String lastName) throws UserNotFoundException {
         Optional<User> optionalUser=userRepository.findByLastName( lastName );
