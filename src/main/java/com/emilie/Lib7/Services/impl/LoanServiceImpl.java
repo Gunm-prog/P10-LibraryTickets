@@ -62,6 +62,17 @@ public class LoanServiceImpl implements LoanService {
         return loanToLoanDto( loan );
     }
 
+    @Override
+    public LoanDto extendLoan(Long id, LoanDto loanDto) throws LoanNotFoundException {
+        Optional<Loan> optionalLoan = loanRepository.findById( loanDto.getId() );
+        if (!optionalLoan.isPresent()){
+            throw new LoanNotFoundException( "loan not found" );
+        }
+        Loan loan = loanDtoToLoan( loanDto );
+        loan = loanRepository.save( loan );
+        return loanDto;
+    }
+
 
     @Override
     public boolean deleteById(Long id) throws LoanNotFoundException {
@@ -78,16 +89,7 @@ public class LoanServiceImpl implements LoanService {
     }
 
 
-    @Override
-    public LoanDto extendLoan(Long id, LoanDto loanDto) throws LoanNotFoundException {
-        Optional<Loan> optionalLoan = loanRepository.findById( loanDto.getId() );
-        if (!optionalLoan.isPresent()){
-            throw new LoanNotFoundException( "loan not found" );
-        }
-        Loan loan = loanDtoToLoan( loanDto );
-        loan = loanRepository.save( loan );
-        return loanDto;
-    }
+
 
 
 
