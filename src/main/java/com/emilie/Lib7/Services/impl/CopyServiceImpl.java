@@ -131,10 +131,13 @@ public class CopyServiceImpl implements CopyService {
         bookDto.setSummary( book.getSummary() );
         copyDto.setBookDto( bookDto );
 
+        Library library = copy.getLibrary();
         LibraryDto libraryDto = new LibraryDto();
-        //TODO faire libraryDto
-        /*copyDto.setLibraryDto( libraryDto );
-*/
+        libraryDto.setLibraryId( library.getLibraryId() );
+        libraryDto.setName( library.getName() );
+        libraryDto.setPhoneNumber(library.getPhoneNumber() );
+        copyDto.setLibraryDto( libraryDto );
+
         return copyDto;
     }
 
@@ -151,7 +154,9 @@ public class CopyServiceImpl implements CopyService {
         copy.setBook( book );
 
         Library library = new Library();
-        //TODO faire Library
+        library.setLibraryId( copyDto.getLibraryDto().getLibraryId() );
+        library.setName( copyDto.getLibraryDto().getName() );
+        library.setPhoneNumber( copyDto.getLibraryDto().getPhoneNumber() );
         copy.setLibrary( library );
 
         return copy;

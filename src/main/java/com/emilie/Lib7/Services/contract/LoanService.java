@@ -20,8 +20,5 @@ public interface LoanService {
 
     List<LoanDto> findAll();
 
-
-    LoanDto extendLoan(Long id, LoanDto loanDto) throws LoanNotFoundException;
-
-
+    LoanDto extendLoan(LoanDto loanDto);
 }

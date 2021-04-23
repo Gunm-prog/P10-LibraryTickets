@@ -35,7 +35,7 @@ public class LoanController {
     }
 
     @ApiOperation( value="Create loan and save it in database" )
-    @PostMapping("/createLoan")
+    @PostMapping("/newLoan")
     public ResponseEntity<String> save(@RequestBody LoanDto loanDto)throws LoanNotFoundException{
         loanService.save(loanDto);
         return ResponseEntity.status( HttpStatus.CREATED ).build();
@@ -43,9 +43,15 @@ public class LoanController {
 
     @ApiOperation( value="extend loan, if registered in database" )
     @PutMapping("/updateLoan")
-    public ResponseEntity<LoanDto>update(@RequestBody Long id, LoanDto loanDto){
+    public ResponseEntity<LoanDto>update(@RequestBody LoanDto loanDto){
         LoanDto loanDto1 = loanService.update( loanDto );
         return new ResponseEntity<LoanDto>(loanDto1, HttpStatus.OK);
+    }
+
+    @PutMapping("/extendLoan")
+    public ResponseEntity<LoanDto>extendLoan(@RequestBody  LoanDto loanDto){
+        LoanDto loanDto1 = loanService.extendLoan( loanDto );
+        return new ResponseEntity<LoanDto>(loanDto1, HttpStatus.OK  );
     }
 
     @ApiOperation( value="delete loan from database by id" )

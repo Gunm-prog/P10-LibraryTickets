@@ -1,16 +1,25 @@
 package com.emilie.Lib7.Services.impl;
 
-import com.emilie.Lib7.Exceptions.LoanAlreadyExistsException;
-import com.emilie.Lib7.Exceptions.LoanNotFoundException;
+import com.emilie.Lib7.Exceptions.*;
 import com.emilie.Lib7.Models.Dtos.LoanDto;
-import com.emilie.Lib7.Models.Dtos.UserDto;
+import com.emilie.Lib7.Models.Entities.Book;
+import com.emilie.Lib7.Models.Entities.Copy;
 import com.emilie.Lib7.Models.Entities.Loan;
+import com.emilie.Lib7.Models.Entities.User;
+import com.emilie.Lib7.Repositories.BookRepository;
+import com.emilie.Lib7.Repositories.CopyRepository;
 import com.emilie.Lib7.Repositories.LoanRepository;
+import com.emilie.Lib7.Repositories.UserRepository;
 import com.emilie.Lib7.Services.contract.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,11 +27,18 @@ import java.util.Optional;
 public class LoanServiceImpl implements LoanService {
 
     private final LoanRepository loanRepository;
+    private final UserRepository userRepository;
+    private final CopyRepository copyRepository;
 
 
     @Autowired
-    public LoanServiceImpl(LoanRepository loanRepository){
+    public LoanServiceImpl(LoanRepository loanRepository,
+                           UserRepository userRepository,
+                           CopyRepository copyRepository){
+
         this.loanRepository = loanRepository;
+        this.userRepository=userRepository;
+        this.copyRepository=copyRepository;
     }
 
 
@@ -44,34 +60,80 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public LoanDto save(LoanDto loanDto) throws LoanAlreadyExistsException {
-        Optional<Loan> optionalLoan = loanRepository.findById( loanDto.getId() );
+    public LoanDto save(LoanDto loanDto) throws
+            UserNotFoundException,
+            CopyNotFoundException,
+            LoanAlreadyExistsException{
+
+
+        Optional<User> optionalUser = userRepository.findById( loanDto.getUserDto().getId() );
+        if (!optionalUser.isPresent()){
+            throw new UserNotFoundException( "user not found" );
+        }
+
+        Optional<Copy> optionalCopy = copyRepository.findById( loanDto.getCopyDto().getId() );
+        if (!optionalCopy.isPresent()){
+            throw new CopyNotFoundException( "copy not found" );
+        }
+
+        Optional<Loan> optionalLoan = loanRepository.findByCopyId(loanDto.getCopyDto().getId());
         if (optionalLoan.isPresent()){
             throw new LoanAlreadyExistsException( "loan already exists" );
         }
+
         Loan loan = loanDtoToLoan( loanDto );
+        loan.setUser( optionalUser.get() );
+        loan.setCopy( optionalCopy.get() );
+        loan.setLoanStartDate(makePeriodDate( 0 ));
+        loan.setLoanEndDate( makePeriodDate( 30 ) );
+        loan.setExtended( false );
         loan = loanRepository.save( loan );
-        return loanDto;
+        return loanToLoanDto( loan );
     }
 
 
 
 
     @Override
-    public LoanDto update(LoanDto loanDto) {
-        Optional<Loan> optionalLoan = loanRepository.findById( loanDto.getId() );
+    public LoanDto update(LoanDto loanDto) throws LoanNotFoundException, UserNotFoundException, CopyNotFoundException {
+        Optional<Loan> optionalLoan = loanRepository.findById( loanDto.getId());
+        if (!optionalLoan.isPresent()){
+            throw new LoanNotFoundException( "loan not found" );
+        }
+
+        Optional<User> optionalUser = userRepository.findById(loanDto.getUserDto().getId() );
+        if (!optionalUser.isPresent()){
+            throw new UserNotFoundException( "user not found" );
+        }
+
+        Optional<Copy> optionalCopy = copyRepository.findById(loanDto.getCopyDto().getId() );
+        if (!optionalCopy.isPresent()){
+            throw new CopyNotFoundException( "copy not found" );
+        }
+
         Loan loan = loanDtoToLoan( loanDto );
+        loan.setUser( optionalUser.get() );
+        loan.setCopy(optionalCopy.get());
         loan = loanRepository.save( loan );
         return loanToLoanDto( loan );
     }
 
     @Override
-    public LoanDto extendLoan(Long id, LoanDto loanDto) throws LoanNotFoundException {
+    public LoanDto extendLoan(LoanDto loanDto) throws LoanNotFoundException, ImpossibleExtendLoanException{
         Optional<Loan> optionalLoan = loanRepository.findById( loanDto.getId() );
         if (!optionalLoan.isPresent()){
             throw new LoanNotFoundException( "loan not found" );
         }
-        Loan loan = loanDtoToLoan( loanDto );
+
+        Loan loan = optionalLoan.get();
+        if (loan.isExtended()){
+            throw new ImpossibleExtendLoanException( "impossible extend of loan" );
+        }
+
+        Date date = makePeriodDate(30);
+        loan.setLoanEndDate( date );
+        loan.setExtended( true );
+
         loan = loanRepository.save( loan );
         return loanDto;
     }
@@ -101,7 +163,7 @@ public class LoanServiceImpl implements LoanService {
         loanDto.setId( loan.getId() );
         loanDto.setLoanStartDate(loan.getLoanStartDate());
         loanDto.setLoanEndDate( loan.getLoanEndDate() );
-        loanDto.setLoanStatus( loan.isLoanStatus() );
+        loanDto.setLoanExtended( loan.isExtended() );
         return loanDto;
     }
 
@@ -110,9 +172,18 @@ public class LoanServiceImpl implements LoanService {
         loan.setId( loanDto.getId());
         loan.setLoanStartDate( loanDto.getLoanStartDate() );
         loan.setLoanEndDate( loanDto.getLoanEndDate() );
-        loan.setLoanStatus( loanDto.isLoanStatus() );
+        loan.setExtended( loanDto.isLoanExtended() );
         return loan;
 
+    }
+
+    private Date makePeriodDate(int numberOfDays){
+        LocalDate localDate = LocalDate.now();
+        localDate= localDate.plusDays( numberOfDays );
+        Instant instant = localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant();
+        Date date = Date.from(instant);
+
+        return date;
     }
 
 

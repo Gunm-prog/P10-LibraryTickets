@@ -16,7 +16,8 @@ public class LoanDto implements Serializable {
     private Long id;
     private Date loanStartDate;
     private Date loanEndDate;
-   /* private boolean extended;*/
-    private boolean loanStatus;
+    private boolean loanExtended;
+    private UserDto userDto;
+    private CopyDto copyDto;
 
 }

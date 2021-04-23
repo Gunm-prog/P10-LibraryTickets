@@ -17,6 +17,8 @@ public class UserDto implements Serializable {
     private String firstName;
     private String userName;
     private String email;
+    private LoanDto loanDto;
+    private CopyDto CopyDto;
    /* private String cardNumber;
     private DateTime registrationDate;
     private AddressDto addressDto;*/

@@ -16,6 +16,7 @@ import java.util.Date;
 @Table(name="loan")
 @Data
 @NoArgsConstructor
+
 public class Loan implements Serializable {
 
  public static final long serialVersionUID = 1L;
@@ -41,11 +42,12 @@ public class Loan implements Serializable {
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date loanEndDate;
 
-    /*@Column(name="extended", nullable=false)
-    private boolean extended;*/
 
-    @Column(name="loan_status", nullable=false)
-    private boolean loanStatus; //Boolean???
+    @Column(name="extended", nullable=false)
+    private boolean extended;
+
+    /*@Column(name="loan_status", nullable=false)
+    private boolean loanStatus; //Boolean???*/
 
 
 
