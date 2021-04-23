@@ -3,6 +3,7 @@ package com.emilie.Lib7.Services.impl;
 import com.emilie.Lib7.Exceptions.LoanAlreadyExistsException;
 import com.emilie.Lib7.Exceptions.LoanNotFoundException;
 import com.emilie.Lib7.Models.Dtos.LoanDto;
+import com.emilie.Lib7.Models.Dtos.UserDto;
 import com.emilie.Lib7.Models.Entities.Loan;
 import com.emilie.Lib7.Repositories.LoanRepository;
 import com.emilie.Lib7.Services.contract.LoanService;
@@ -42,7 +43,6 @@ public class LoanServiceImpl implements LoanService {
         return loanToLoanDto(loan);
     }
 
-
     @Override
     public LoanDto save(LoanDto loanDto) throws LoanAlreadyExistsException {
         Optional<Loan> optionalLoan = loanRepository.findById( loanDto.getId() );
@@ -53,6 +53,9 @@ public class LoanServiceImpl implements LoanService {
         loan = loanRepository.save( loan );
         return loanDto;
     }
+
+
+
 
     @Override
     public LoanDto update(LoanDto loanDto) {
@@ -98,7 +101,6 @@ public class LoanServiceImpl implements LoanService {
         loanDto.setId( loan.getId() );
         loanDto.setLoanStartDate(loan.getLoanStartDate());
         loanDto.setLoanEndDate( loan.getLoanEndDate() );
-        loanDto.setExtended( loan.isExtended() );
         loanDto.setLoanStatus( loan.isLoanStatus() );
         return loanDto;
     }
@@ -108,7 +110,6 @@ public class LoanServiceImpl implements LoanService {
         loan.setId( loanDto.getId());
         loan.setLoanStartDate( loanDto.getLoanStartDate() );
         loan.setLoanEndDate( loanDto.getLoanEndDate() );
-        loan.setExtended( loanDto.isExtended() );
         loan.setLoanStatus( loanDto.isLoanStatus() );
         return loan;
 

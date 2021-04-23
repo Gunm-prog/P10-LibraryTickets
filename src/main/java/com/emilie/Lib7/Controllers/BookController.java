@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @RestController
@@ -75,8 +76,8 @@ public class BookController {
 
 
     @ApiOperation( value="Retrieve a book by its title, if it is registered in database" )
-    @GetMapping("/title/{title }")
-    public ResponseEntity<BookDto> findByTitle(@PathVariable String title) throws BookNotFoundException {
+    @GetMapping("/title")
+    public ResponseEntity<BookDto> findByTitle(@RequestParam String title) throws BookNotFoundException, UnsupportedEncodingException {
         BookDto bookDto = bookService.findByTitle( title );
         /*bookDto.setTitle( title );*/
         return new ResponseEntity<BookDto>(bookDto,HttpStatus.OK);

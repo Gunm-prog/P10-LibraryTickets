@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -13,9 +14,9 @@ public class LoanDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    private DateTime loanStartDate;
-    private DateTime loanEndDate;
-    private boolean extended;
+    private Date loanStartDate;
+    private Date loanEndDate;
+   /* private boolean extended;*/
     private boolean loanStatus;
 
 }

@@ -33,17 +33,16 @@ public class Book implements Serializable{
     @Column(name="isbn", length=30, nullable=false)
     private String isbn;
 
-    @Column(name="summary", length=500)
+    @Column(name="summary", length=800)
     private String summary;
 
-
-    @ManyToOne
-    @JoinColumn(name="author_id",referencedColumnName="author_id")
     @JsonIgnoreProperties("books")
+    @ManyToOne
+    @JoinColumn(name="author_id", nullable = false)
     private Author author;
 
-    /*@OneToMany(mappedBy="book")
-    private Set<Copy> copies;*/
+    @OneToMany(mappedBy="book")
+    private Set<Copy> copies;
 
     /*@ManyToOne
     @JoinColumn(name="cover_id")

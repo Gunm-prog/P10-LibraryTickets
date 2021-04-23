@@ -22,7 +22,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name="author")
 @EqualsAndHashCode(exclude="books")
-/*@JsonIdentityInfo( generator=ObjectIdGenerators.PropertyGenerator.class, property="id")*/
 public class Author implements Serializable{
 
     public static final long serialVersionUID = 1L;
@@ -42,11 +41,10 @@ public class Author implements Serializable{
 
 
     @OneToMany(mappedBy="author")
-    @JsonIgnoreProperties("author")
+    @JsonIgnoreProperties("authors")
     private Set<Book> books ;
 
-    /*public void setId(Long id) {
-    }*/
+
 
 
 }

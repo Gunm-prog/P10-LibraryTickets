@@ -7,10 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 
 @Data
@@ -23,8 +20,8 @@ public class BookDto implements Serializable/*, List<BookDto> */{
     private String title;
     private String isbn;
     private String summary;
-    private Author author;
-    private Copy copy;
+    private AuthorDto authorDto;
+    private Set<CopyDto> copyDtos;
 
    /* @Override
     public int size() {
