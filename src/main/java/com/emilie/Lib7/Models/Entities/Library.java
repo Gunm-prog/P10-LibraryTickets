@@ -15,7 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class Library implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID=1L;
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -28,14 +28,19 @@ public class Library implements Serializable {
     @Column(name="phoneNumber", length=10, nullable=false)
     private String phoneNumber;
 
-    /*@ManyToOne
-    @JoinColumn(name="adress_id")
-    private Address address;*/
-
     @OneToMany(mappedBy="library")
     @JsonIgnoreProperties("libraries")
     private Set<Copy> copies;
-
-
-
 }
+
+    /*@ManyToOne
+    @JoinColumn(name="adress_id")
+    private Address address;
+
+    @OneToMany(mappedBy="library")
+    @JsonIgnoreProperties("libraries")
+    private Set<Copy> copies;*/
+
+
+
+

@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @Table(name="copy")
-
+@EqualsAndHashCode(exclude={"library", "book"})
 /*@JsonIdentityInfo( generator=ObjectIdGenerators.PropertyGenerator.class, property="id")*/
 public class Copy implements Serializable {
 

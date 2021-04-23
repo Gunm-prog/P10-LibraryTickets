@@ -17,7 +17,13 @@ public interface LibraryService {
     List<LibraryDto> findAll();
 
 
-    Library findById(Long id);
+    LibraryDto findById(Long id);
+
+    LibraryDto save(LibraryDto libraryDto);
+
+    LibraryDto update(LibraryDto libraryDto);
+
+    boolean deleteById(Long id);
 
 
 List<LibraryDto> findByAddress(AddressDto address);

@@ -38,7 +38,7 @@ public class CopyController {
     }
 
     @ApiOperation( value="Create a copy and save it in database" )
-    @PostMapping("/createCopy")
+    @PostMapping("/newCopy")
     public ResponseEntity<String> save(@RequestBody CopyDto copyDto) throws CopyNotFoundException{
         copyService.save(copyDto);
         return ResponseEntity.status( HttpStatus.CREATED ).build();

@@ -1,64 +1,70 @@
-/*
+
 package com.emilie.Lib7.Controllers;
 
 
-import com.emilie.Lib7.Models.Dtos.AddressDto;
-import com.emilie.Lib7.Models.Dtos.BookDto;
+import com.emilie.Lib7.Exceptions.LibraryNotFoundException;
+import com.emilie.Lib7.Exceptions.LoanAlreadyExistsException;
 import com.emilie.Lib7.Models.Dtos.LibraryDto;
 import com.emilie.Lib7.Models.Entities.Address;
-import com.emilie.Lib7.Services.contract.AuthorsService;
 import com.emilie.Lib7.Services.contract.BookService;
+import com.emilie.Lib7.Services.contract.CopyService;
 import com.emilie.Lib7.Services.contract.LibraryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/lookingFor")
+@RequestMapping("api/v1/libraries")
 public class LibraryController {
 
     private final LibraryService libraryService;
-   */
-/* private final BookService bookService;
-    private AuthorsService authorsService;*//*
 
-    private LibraryDto libraryDto;
-  */
-/*  private AddressDto addressDto;
-    private BookDto bookDto;*//*
 
 
     @Autowired
-    public LibraryController(LibraryService libraryService
-                             */
-/*AuthorsService authorsService,
-                             BookService bookService*//*
-) {
-        this.libraryService=libraryService;
-        */
-/*this.bookService=bookService;
-        this.authorsService=authorsService*//*
-;
+    public LibraryController(LibraryService libraryService){
+
+        this.libraryService = libraryService;
+
     }
 
-    */
-/*@GetMapping("/library-list")
-    public List<LibraryDto> getAllLibraries(){
-        return this.libraryService.findAll();
-    }*//*
+    @GetMapping("/{id}")
+    public ResponseEntity<LibraryDto> getById(@PathVariable(value="id") Long id) throws LibraryNotFoundException{
+        LibraryDto libraryDto = libraryService.findById( id );
+        return new ResponseEntity<LibraryDto>(libraryDto, HttpStatus.OK );
+    }
+
+    @GetMapping("/libraryList")
+    public List<LibraryDto> findAll(){return this.libraryService.findAll();}
 
 
-  */
-/*  @GetMapping("/library-address")
-    public List<LibraryDto> getByAddress(Address address){
-        libraryDto.setAddressDto(addressDto);
-        return this.libraryService.findByAddress( addressDto );
-    }*//*
+    @PostMapping("/newLibrary")
+    public ResponseEntity<String> save(@RequestBody LibraryDto libraryDto) throws LoanAlreadyExistsException {
+        libraryService.save( libraryDto );
+        return ResponseEntity.status( HttpStatus.CREATED ).build();
+    }
+
+    @PutMapping("/updateLibrary")
+    public ResponseEntity<LibraryDto> update(@RequestBody LibraryDto libraryDto) throws LibraryNotFoundException{
+        LibraryDto libraryDto1 = libraryService.update(libraryDto);
+        return new ResponseEntity<LibraryDto>(libraryDto1, HttpStatus.OK  );
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable(value="id") Long id) throws LibraryNotFoundException{
+        if (libraryService.deleteById( id )){
+            return ResponseEntity.status( HttpStatus.OK ).build();
+        }else {
+            return ResponseEntity.status( 500 ).build();
+        }
+    }
+
+
 
 
 
 }
-*/
+

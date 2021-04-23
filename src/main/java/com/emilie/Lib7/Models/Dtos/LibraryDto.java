@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -15,6 +16,7 @@ public class LibraryDto implements Serializable {
     private String name;
     private String phoneNumber;
     private AddressDto addressDto;
+    private Set<CopyDto> copyDtos;
 
 
 }

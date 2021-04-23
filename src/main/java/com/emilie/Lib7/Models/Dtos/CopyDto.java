@@ -16,7 +16,8 @@ public class CopyDto implements Serializable {
     private boolean available;
     private BookDto bookDto;
     private AuthorDto authorDto;
-   /* private LibraryDto libraryDto;*/
+    private LibraryDto libraryDto;
+
 
 
 

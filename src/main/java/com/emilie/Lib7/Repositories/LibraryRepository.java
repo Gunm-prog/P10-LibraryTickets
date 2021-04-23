@@ -16,5 +16,6 @@ public interface LibraryRepository extends JpaRepository<Library, Long> {
     Optional<Library> findById(Long id);
 
 
+    Optional<Library> findByName(String name);
 }
 

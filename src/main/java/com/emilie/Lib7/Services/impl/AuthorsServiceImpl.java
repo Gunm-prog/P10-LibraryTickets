@@ -5,8 +5,10 @@ import com.emilie.Lib7.Exceptions.AuthorAlreadyExistException;
 import com.emilie.Lib7.Exceptions.AuthorNotFoundException;
 import com.emilie.Lib7.Models.Dtos.AuthorDto;
 import com.emilie.Lib7.Models.Dtos.BookDto;
+import com.emilie.Lib7.Models.Dtos.CopyDto;
 import com.emilie.Lib7.Models.Entities.Author;
 import com.emilie.Lib7.Models.Entities.Book;
+import com.emilie.Lib7.Models.Entities.Copy;
 import com.emilie.Lib7.Repositories.AuthorsRepository;
 import com.emilie.Lib7.Services.contract.AuthorsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,23 +118,28 @@ public class AuthorsServiceImpl implements AuthorsService {
         authorDto.setLastName( author.getLastName() );
 
         Set<BookDto> bookDtos = new HashSet<>();
-        if(!author.getBooks().isEmpty()){
+        if(author.getBooks() != null){
             for (Book book : author.getBooks()) {
                 BookDto bookDto = new BookDto();
                 bookDto.setBookId( book.getBookId() );
                 bookDto.setTitle( book.getTitle() );
                 bookDto.setIsbn( book.getIsbn() );
                 bookDto.setSummary( book.getSummary() );
+
+                Set<CopyDto> copyDtos = new HashSet<>();
+                bookDto.setCopyDtos(copyDtos);
                 /*bookDto.setCopy(book.ge);*/
                 bookDtos.add( bookDto );
             }
         }
         authorDto.setBookDtos( bookDtos );
 
+
+
         return authorDto;
     }
 
-    //TODO erreur postman save
+
    private Author authorDtoToAuthor(AuthorDto authorDto) {
         Author author=new Author();
         author.setAuthorId( authorDto.getAuthorId() );
@@ -141,14 +148,18 @@ public class AuthorsServiceImpl implements AuthorsService {
 
 
         Set<Book> books=new HashSet<>();
-        if (!authorDto.getBookDtos().isEmpty()){
+        if (authorDto.getBookDtos() != null){
             for (BookDto bookDto : authorDto.getBookDtos()) {
                 Book book = new Book();
                 book.setBookId( bookDto.getBookId() );
                 book.setTitle( bookDto.getTitle() );
                 book.setIsbn( bookDto.getIsbn() );
                 book.setSummary( bookDto.getSummary() );
-                books.add( book );
+
+                Set<Copy> copies = new HashSet<>();
+                book.setCopies(copies);
+
+            books.add( book );
             }
         }
 
