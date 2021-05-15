@@ -5,6 +5,7 @@ import com.emilie.Lib7.Models.Entities.Loan;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -20,4 +21,6 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
 
 
     Optional<Loan> findByCopyId(Long id);
+
+    List<Loan> findLoansByUserId(Long userId);
 }

@@ -1,11 +1,13 @@
 package com.emilie.Lib7.Repositories;
 
+import com.emilie.Lib7.Models.Dtos.LoanDto;
 import com.emilie.Lib7.Models.Dtos.UserDto;
 import com.emilie.Lib7.Models.Entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -15,6 +17,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
    /*User user save(User user);*/
 
      Optional<User> findByLastName(String lastName);
+
+  /*   Set<LoanDto> findLoansByUser(Long userId);*/
 
 
 

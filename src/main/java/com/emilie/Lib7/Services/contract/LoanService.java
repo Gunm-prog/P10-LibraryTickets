@@ -14,6 +14,8 @@ public interface LoanService {
 
     LoanDto save(LoanDto loanDto) throws LoanAlreadyExistsException;
 
+    List<LoanDto> findLoansByUserId(Long userId);
+
     LoanDto update(LoanDto loanDto);
 
     boolean deleteById(Long id) throws  LoanNotFoundException;

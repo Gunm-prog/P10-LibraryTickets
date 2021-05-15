@@ -42,8 +42,8 @@ public class LibraryServiceImpl implements LibraryService {
         List<Library> libraries=libraryRepository.findAll();
         List<LibraryDto> libraryDtos=new ArrayList<>();
         for (Library library : libraries) {
-            LibraryDto libraryDto=new LibraryDto();
-            libraryDto.setName( library.getName() );
+            LibraryDto libraryDto= libraryToLibraryDto(library);
+            libraryDtos.add(libraryDto);
         }
         return libraryDtos;
     }
@@ -110,6 +110,7 @@ public class LibraryServiceImpl implements LibraryService {
         libraryDto.setName( library.getName() );
         libraryDto.setPhoneNumber( library.getPhoneNumber() );
 
+
         Set<CopyDto> copyDtos=new HashSet<>();
         if (library.getCopies() != null) {
             for (Copy copy : library.getCopies()) {
@@ -121,6 +122,7 @@ public class LibraryServiceImpl implements LibraryService {
             libraryDto.setCopyDtos( copyDtos );
         }
         return libraryDto;
+
     }
 
     private Library libraryDtoToLibrary(LibraryDto libraryDto) {

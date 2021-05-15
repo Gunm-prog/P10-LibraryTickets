@@ -34,6 +34,13 @@ public class LoanController {
         return this.loanService.findAll();
     }
 
+
+    @GetMapping("/user/{userId}")
+    public List<LoanDto> findLoansByUserId(@PathVariable Long userId){
+        return loanService.findLoansByUserId( userId );
+
+    }
+
     @ApiOperation( value="Create loan and save it in database" )
     @PostMapping("/newLoan")
     public ResponseEntity<String> save(@RequestBody LoanDto loanDto)throws LoanNotFoundException{

@@ -3,15 +3,19 @@ package com.emilie.Lib7.Services.impl;
 
 import com.emilie.Lib7.Exceptions.UserAlreadyExistException;
 import com.emilie.Lib7.Exceptions.UserNotFoundException;
+import com.emilie.Lib7.Models.Dtos.LoanDto;
 import com.emilie.Lib7.Models.Dtos.UserDto;
+import com.emilie.Lib7.Models.Entities.Loan;
 import com.emilie.Lib7.Models.Entities.User;
 import com.emilie.Lib7.Repositories.UserRepository;
 import com.emilie.Lib7.Services.contract.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 @Service
@@ -53,11 +57,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto update(UserDto userDto) {
-        Optional<User> optionalUser=userRepository.findById( userDto.getId() );
+        Optional<User> optionalUser=userRepository.findById( userDto.getUserId() );
         User user=userDtoToUser( userDto );
         user=userRepository.save( user );
         return userToUserDto( user );
     }
+
+
+   /* @Override
+    public*/
 
 
     @Override
@@ -144,21 +152,51 @@ public class UserServiceImpl implements UserService {
     // de sorte que this.userToDto( unUser ) placé dans une méthode de UserServiceImpl, appelera la méthode ci-dessous
     private UserDto userToUserDto(User user) {
         UserDto userDto=new UserDto();
-        userDto.setId( user.getUserId() );
+        userDto.setUserId( user.getUserId() );
         userDto.setUserName( user.getUserName() );
         userDto.setEmail( user.getEmail() );
         userDto.setLastName( user.getLastName() );
         userDto.setFirstName( user.getFirstName() );
+
+        Set<LoanDto> loanDtos = new HashSet<>();
+        if (user.getLoans() != null){
+            for (Loan loan : user.getLoans()){
+                LoanDto loanDto = new LoanDto();
+                loanDto.setId(loan.getId());
+                loanDto.setLoanStartDate(loan.getLoanStartDate());
+                loanDto.setLoanEndDate( loan.getLoanEndDate() );
+                loanDto.setExtended( loan.isExtended() );
+                loanDtos.add(loanDto);
+            }
+            userDto.setLoanDtos( loanDtos );
+
+        }
+
+
         return userDto;
     }
 
     private User userDtoToUser(UserDto userDto) {
         User user=new User();
-        user.setUserId( userDto.getId() );
+        user.setUserId( userDto.getUserId() );
         user.setUserName( userDto.getUserName() );
         user.setEmail( userDto.getEmail() );
         user.setFirstName( userDto.getFirstName() );
         user.setLastName( userDto.getLastName() );
+
+        Set<Loan> loans = new HashSet<>();
+        if (userDto.getLoanDtos() != null){
+            for(LoanDto loanDto : userDto.getLoanDtos()){
+                Loan loan = new Loan();
+                loan.setId( loanDto.getId() );
+                loan.setLoanStartDate( loanDto.getLoanStartDate() );
+                loan.setLoanEndDate( loanDto.getLoanEndDate() );
+                loan.setExtended( loanDto.isExtended() );
+                loans.add(loan);
+            }
+            user.setLoans( loans );
+        }
+
         return user;
     }
 

@@ -23,8 +23,15 @@ import java.util.List;
 @RequestMapping("/api/v1/books")
 public class BookController {
 
+   /* private final FeignProxy feignProxy;*/
+
     private final BookService bookService;
 
+
+    /*@Autowired
+    public BookController(FeignProxy feignProxy) {
+        this.feignProxy = feignProxy;
+    }*/
 
     @Autowired
     public BookController(BookService bookService){

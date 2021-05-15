@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name="user")
@@ -32,6 +33,9 @@ public class User implements Serializable {
 
     @Column(name="email", length=50, unique=true, nullable=false)
     private String email;
+
+    @OneToMany(mappedBy="user")
+    private Set<Loan> loans;
 
    /* @Column(name="cardNumber", length=50, unique=true, nullable=false)
     private String cardNumber;

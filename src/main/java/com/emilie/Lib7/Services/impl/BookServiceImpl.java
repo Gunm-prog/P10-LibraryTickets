@@ -45,8 +45,8 @@ public class BookServiceImpl implements BookService {
         List<Book> books=bookRepository.findAll();
         List<BookDto> bookDtos=new ArrayList<>();
         for (Book book : books) {
-            BookDto bookDto=new BookDto();
-            bookDto.setTitle( book.getTitle() );
+            BookDto bookDto =  bookToBookDto( book );
+            bookDtos.add(bookDto);
         }
         return bookDtos;
     }

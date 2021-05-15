@@ -17,7 +17,6 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(exclude="author")
-/*@JsonIdentityInfo( generator=ObjectIdGenerators.PropertyGenerator.class, property="id")*/
 public class Book implements Serializable{
 
     public static final long serialVersionUID = 1L;

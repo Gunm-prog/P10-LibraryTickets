@@ -28,6 +28,11 @@ public class Library implements Serializable {
     @Column(name="phoneNumber", length=10, nullable=false)
     private String phoneNumber;
 
+    /*@Column(name="address", length = 50, nullable=false)
+    private String address;*/
+
+
+
     @OneToMany(mappedBy="library")
     @JsonIgnoreProperties("libraries")
     private Set<Copy> copies;
