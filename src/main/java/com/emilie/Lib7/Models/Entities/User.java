@@ -1,6 +1,7 @@
 package com.emilie.Lib7.Models.Entities;
 
 
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -36,6 +37,9 @@ public class User implements Serializable {
 
     @OneToMany(mappedBy="user")
     private Set<Loan> loans;
+
+    @Embedded
+    private Address address;
 
    /* @Column(name="cardNumber", length=50, unique=true, nullable=false)
     private String cardNumber;

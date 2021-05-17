@@ -20,6 +20,7 @@ public class UserDto implements Serializable {
     private String email;
     private Set<LoanDto> loanDtos;
     private CopyDto CopyDto;
+    private AddressDto addressDto = null;
 
    /* private String cardNumber;
     private DateTime registrationDate;

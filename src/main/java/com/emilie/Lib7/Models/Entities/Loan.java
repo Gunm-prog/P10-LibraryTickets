@@ -24,7 +24,7 @@ public class Loan implements Serializable {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="loan_id")
-    private Long Id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name="copy_id", nullable=false)

@@ -1,10 +1,13 @@
 package com.emilie.Lib7.Services.impl;
 
 
+import com.emilie.Lib7.Exceptions.AddressNotFoundException;
 import com.emilie.Lib7.Exceptions.UserAlreadyExistException;
 import com.emilie.Lib7.Exceptions.UserNotFoundException;
+import com.emilie.Lib7.Models.Dtos.AddressDto;
 import com.emilie.Lib7.Models.Dtos.LoanDto;
 import com.emilie.Lib7.Models.Dtos.UserDto;
+import com.emilie.Lib7.Models.Entities.Address;
 import com.emilie.Lib7.Models.Entities.Loan;
 import com.emilie.Lib7.Models.Entities.User;
 import com.emilie.Lib7.Repositories.UserRepository;
@@ -49,6 +52,10 @@ public class UserServiceImpl implements UserService {
         if (optionalUser.isPresent()) {
             throw new UserAlreadyExistException( "Email already exists" );
         }
+        if(userDto.getAddressDto() == null){
+            throw new AddressNotFoundException( "Address not found" );
+        }
+
         User user=userDtoToUser( userDto );
         user=userRepository.save( user );
 
@@ -114,6 +121,7 @@ public class UserServiceImpl implements UserService {
         userDto.setEmail( user.getEmail() );
         userDto.setUserName( user.getUserName() );
         userDto.setFirstName( user.getFirstName() );
+
         return userDto;
     }
 
@@ -146,6 +154,7 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> findAll() {
         return null;
     }
+
     // Les méthodes ci-dessous sont en private, parce qu'elles ne sont pas destinées à être utilisées en dehors de la class UserServiceImpl.
     // mais uniquement par elle-mêmes. Pour les utiliser, il faut utiliser le mot-clef this.NomDeMéthode.
     // Le this, fait référence à l'instance qui est exécutée. donc ici UserServiceImpl
@@ -172,6 +181,13 @@ public class UserServiceImpl implements UserService {
 
         }
 
+        AddressDto addressDto = new AddressDto();
+        addressDto.setNumber( user.getAddress().getNumber() );
+        addressDto.setStreet( user.getAddress().getStreet() );
+        addressDto.setZipCode( user.getAddress().getZipCode() );
+        addressDto.setCity( user.getAddress().getCity() );
+        userDto.setAddressDto( addressDto );
+
 
         return userDto;
     }
@@ -196,6 +212,13 @@ public class UserServiceImpl implements UserService {
             }
             user.setLoans( loans );
         }
+
+        Address address = new Address();
+        address.setNumber( userDto.getAddressDto().getNumber() );
+        address.setStreet( userDto.getAddressDto().getStreet() );
+        address.setZipCode( userDto.getAddressDto().getZipCode() );
+        address.setCity( userDto.getAddressDto().getCity() );
+        user.setAddress( address );
 
         return user;
     }

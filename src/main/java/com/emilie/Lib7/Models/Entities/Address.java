@@ -6,7 +6,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity
+//@Entity
+@Embeddable
 @Table(name="address")
 @Data
 @NoArgsConstructor
@@ -14,10 +15,10 @@ public class Address implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+    /*@Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name ="address_id")
-    private Long addressId;
+    private Long addressId;*/
 
     @Column(name="number", nullable=false)
     private int number;
@@ -30,6 +31,12 @@ public class Address implements Serializable{
 
     @Column(name="city", nullable=false)
     private String city;
+
+    /*@Embedded
+    private User user;
+
+    @Embedded
+    private Library library;*/
 
 
 }

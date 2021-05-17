@@ -3,6 +3,8 @@ package com.emilie.Lib7.Repositories;
 import com.emilie.Lib7.Models.Dtos.LoanDto;
 import com.emilie.Lib7.Models.Entities.Loan;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,5 +24,10 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
 
     Optional<Loan> findByCopyId(Long id);
 
-    List<Loan> findLoansByUserId(Long userId);
+
+    @Query(value = "SELECT l FROM Loan l " +
+            "WHERE l.user.id = :userId")
+
+    List<Loan> findLoansByUserId(@Param("userId") Long userId);
+
 }
