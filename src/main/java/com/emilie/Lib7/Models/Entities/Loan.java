@@ -1,12 +1,8 @@
 package com.emilie.Lib7.Models.Entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -42,6 +38,8 @@ public class Loan implements Serializable {
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date loanEndDate;
 
+   @Column(name = "expected_return_date", nullable = false)
+   private Date expectedReturnDate;
 
     @Column(name="extended", nullable=false)
     private boolean extended;

@@ -5,7 +5,6 @@ package com.emilie.Lib7.Models.Entities;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;

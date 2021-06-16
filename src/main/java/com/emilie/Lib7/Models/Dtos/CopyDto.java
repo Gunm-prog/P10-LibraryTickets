@@ -1,6 +1,5 @@
 package com.emilie.Lib7.Models.Dtos;
 
-import com.emilie.Lib7.Models.Entities.Book;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,8 +15,5 @@ public class CopyDto implements Serializable {
     private boolean available;
     private BookDto bookDto;
     private LibraryDto libraryDto;
-
-
-
 
 }

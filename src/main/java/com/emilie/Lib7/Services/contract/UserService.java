@@ -14,6 +14,8 @@ public interface UserService {
 
     UserDto save(UserDto userDto) throws UserAlreadyExistException;
 
+    UserDto findByUserName(String userName);
+
     UserDto findByLastName(String lastName) throws UserNotFoundException;
 
     UserDto findByEmail(String email) throws UserNotFoundException;

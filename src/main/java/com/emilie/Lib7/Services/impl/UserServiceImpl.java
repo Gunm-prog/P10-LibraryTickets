@@ -62,6 +62,8 @@ public class UserServiceImpl implements UserService {
         return userToUserDto( user );
     }
 
+
+
     @Override
     public UserDto update(UserDto userDto) {
         Optional<User> optionalUser=userRepository.findById( userDto.getUserId() );
@@ -108,7 +110,7 @@ public class UserServiceImpl implements UserService {
         return savedUser;
         }*/
 
-//TODO conversion methods
+
     @Override
     public UserDto findByLastName(String lastName) throws UserNotFoundException {
         Optional<User> optionalUser=userRepository.findByLastName( lastName );
@@ -124,6 +126,14 @@ public class UserServiceImpl implements UserService {
 
         return userDto;
     }
+
+    @Override
+    public UserDto findByUserName(String userName) {
+        return userRepository.findByUserName(userName);
+    }
+
+
+
 
     @Override
     public UserDto findByEmail(String email) throws UserNotFoundException {
@@ -192,6 +202,10 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
+
+
+
+
     private User userDtoToUser(UserDto userDto) {
         User user=new User();
         user.setUserId( userDto.getUserId() );
@@ -222,5 +236,7 @@ public class UserServiceImpl implements UserService {
 
         return user;
     }
+
+
 
 }
