@@ -16,7 +16,8 @@ public class UserDto implements Serializable {
     private Long userId;
     private String lastName;
     private String firstName;
-    private String userName;
+    private String username;
+    private String password;
     private String email;
     private Set<LoanDto> loanDtos;
     private CopyDto CopyDto;

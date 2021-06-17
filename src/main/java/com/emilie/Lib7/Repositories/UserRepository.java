@@ -16,9 +16,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
      Optional<User> findByLastName(String lastName);
 
-    UserDto findByUserName(String userName);
+    UserDto findByUsername(String username);
 
-    org.springframework.security.core.userdetails.User findByUsername(String username);
+    /*org.springframework.security.core.userdetails.User findByUsername(String username);*/
 
     /*   Set<LoanDto> findLoansByUser(Long userId);*/
 

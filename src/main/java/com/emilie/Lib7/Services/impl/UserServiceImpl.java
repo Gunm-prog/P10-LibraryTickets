@@ -121,15 +121,15 @@ public class UserServiceImpl implements UserService {
         UserDto userDto=new UserDto();
         userDto.setLastName( user.getLastName() );
         userDto.setEmail( user.getEmail() );
-        userDto.setUserName( user.getUserName() );
+        userDto.setUsername( user.getUsername() );
         userDto.setFirstName( user.getFirstName() );
 
         return userDto;
     }
 
     @Override
-    public UserDto findByUserName(String userName) {
-        return userRepository.findByUserName(userName);
+    public UserDto findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
 
@@ -172,7 +172,7 @@ public class UserServiceImpl implements UserService {
     private UserDto userToUserDto(User user) {
         UserDto userDto=new UserDto();
         userDto.setUserId( user.getUserId() );
-        userDto.setUserName( user.getUserName() );
+        userDto.setUsername( user.getUsername() );
         userDto.setEmail( user.getEmail() );
         userDto.setLastName( user.getLastName() );
         userDto.setFirstName( user.getFirstName() );
@@ -209,7 +209,7 @@ public class UserServiceImpl implements UserService {
     private User userDtoToUser(UserDto userDto) {
         User user=new User();
         user.setUserId( userDto.getUserId() );
-        user.setUserName( userDto.getUserName() );
+        user.setUsername( userDto.getUsername() );
         user.setEmail( userDto.getEmail() );
         user.setFirstName( userDto.getFirstName() );
         user.setLastName( userDto.getLastName() );

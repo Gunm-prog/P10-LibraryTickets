@@ -15,20 +15,20 @@ import java.util.List;
  * @author emilie
  */
 @Entity
-@Table(name = "user")
+@Table(name = "authenticate")
 @Getter
 @Setter
 @NoArgsConstructor
-public class User implements Serializable {
+public class UserJwt implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "user_id")
-    private int id;
+    @Column(name = "id")
+    private Long id;
 
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", unique=true, nullable = false)
     private String username;
 
     @Column(name = "password", nullable = false)
@@ -51,12 +51,12 @@ public class User implements Serializable {
         return new ArrayList<>();
     }
 
-    public List<String> getPermissionsList() {
+    /*public List<String> getPermissionsList() {
         if (this.permissions.length() > 0) {
             return Arrays.asList(this.permissions.split(","));
         }
         return new ArrayList<>();
-    }
+    }*/
 
 
 

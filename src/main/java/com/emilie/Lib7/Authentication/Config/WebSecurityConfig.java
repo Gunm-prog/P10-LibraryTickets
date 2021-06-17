@@ -1,4 +1,3 @@
-/*
 package com.emilie.Lib7.Authentication.Config;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +53,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // We don't need CSRF for this example
         httpSecurity.csrf().disable()
                 // dont authenticate this particular request
-                .authorizeRequests().antMatchers("/authenticate").permitAll().
+                .authorizeRequests().antMatchers("/authenticate").permitAll()
+                .and()
+                .authorizeRequests().antMatchers("/api/v1/users/createUserAccount").permitAll()
+                .and()
+                .authorizeRequests().antMatchers("/register").permitAll().
+
                 // all other requests need to be authenticated
                         anyRequest().authenticated().and().
                 // make sure we use stateless session; session won't be used to
@@ -65,4 +69,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // Add a filter to validate the tokens with every request
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
-}*/
+}

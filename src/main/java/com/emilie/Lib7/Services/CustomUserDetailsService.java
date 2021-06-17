@@ -1,3 +1,4 @@
+/*
 package com.emilie.Lib7.Services;
 
 import com.emilie.Lib7.Repositories.UserRepository;
@@ -20,3 +21,4 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new User(user.getUsername(), user.getPassword(), new ArrayList<>() );
     }
 }
+*/

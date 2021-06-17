@@ -1,14 +1,11 @@
 package com.emilie.Lib7.Services.impl;
 
 import com.emilie.Lib7.Exceptions.*;
-import com.emilie.Lib7.Models.Dtos.BookDto;
 import com.emilie.Lib7.Models.Dtos.LoanDto;
 import com.emilie.Lib7.Models.Dtos.UserDto;
-import com.emilie.Lib7.Models.Entities.Book;
 import com.emilie.Lib7.Models.Entities.Copy;
 import com.emilie.Lib7.Models.Entities.Loan;
 import com.emilie.Lib7.Models.Entities.User;
-import com.emilie.Lib7.Repositories.BookRepository;
 import com.emilie.Lib7.Repositories.CopyRepository;
 import com.emilie.Lib7.Repositories.LoanRepository;
 import com.emilie.Lib7.Repositories.UserRepository;
@@ -18,9 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -186,7 +181,7 @@ public class LoanServiceImpl implements LoanService {
         userDto.setUserId( user.getUserId() );
         userDto.setFirstName( user.getFirstName() );
         userDto.setLastName( user.getLastName() );
-        userDto.setUserName( user.getUserName() );
+        userDto.setUsername( user.getUsername() );
         userDto.setEmail( user.getEmail() );
         loanDto.setUserDto( userDto );
 
@@ -204,7 +199,7 @@ public class LoanServiceImpl implements LoanService {
         user.setUserId(loanDto.getUserDto().getUserId());
         user.setFirstName( loanDto.getUserDto().getFirstName() );
         user.setLastName( loanDto.getUserDto().getLastName() );
-        user.setUserName( loanDto.getUserDto().getUserName() );
+        user.setUsername( loanDto.getUserDto().getUsername() );
         user.setEmail( loanDto.getUserDto().getEmail() );
         loan.setUser( user );
 

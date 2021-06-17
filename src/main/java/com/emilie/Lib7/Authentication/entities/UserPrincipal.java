@@ -14,20 +14,18 @@ import java.util.List;
  */
 public class UserPrincipal implements UserDetails {
 
-    private final User user;
+    private final UserJwt userJwt;
 
-    public UserPrincipal(User user) {
-        this.user=user;
+    public UserPrincipal(UserJwt userJwt) {
+        this.userJwt=userJwt;
     }
 
-        private Integer userId;
-
-        public User getUserAuthentication() {
-            return user;
+        public UserJwt getUserAuthentication() {
+            return userJwt;
         }
 
-        public Integer getUserId(){
-            return this.user.getId();
+        public Long getUserId(){
+            return this.userJwt.getId();
         }
 
     /**
@@ -40,13 +38,13 @@ public class UserPrincipal implements UserDetails {
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
-        // Extract permissions
-        this.user.getPermissionsList().forEach( p -> {
+        /*// Extract permissions
+        this.userJwt.getPermissionsList().forEach( p -> {
             GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(p);
             grantedAuthorities.add(grantedAuthority);
-        });
+        });*/
         // Extract roles
-        this.user.getRolesList().forEach( r -> {
+        this.userJwt.getRolesList().forEach( r -> {
             GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + r);
             grantedAuthorities.add(grantedAuthority);
         });
@@ -56,7 +54,7 @@ public class UserPrincipal implements UserDetails {
     }
 
     public String getRole(){
-        return this.user.getRoles();
+        return this.userJwt.getRoles();
     }
 
     /**
@@ -66,7 +64,7 @@ public class UserPrincipal implements UserDetails {
      */
     @Override
     public String getPassword() {
-        return this.user.getPassword();
+        return this.userJwt.getPassword();
     }
 
     /**
@@ -76,7 +74,7 @@ public class UserPrincipal implements UserDetails {
      */
     @Override
     public String getUsername() {
-        return this.user.getUsername();
+        return this.userJwt.getUsername();
     }
 
     /**
@@ -122,6 +120,6 @@ public class UserPrincipal implements UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return this.user.isActive();
+        return this.userJwt.isActive();
     }
 }
