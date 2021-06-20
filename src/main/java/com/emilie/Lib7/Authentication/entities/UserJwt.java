@@ -51,12 +51,7 @@ public class UserJwt implements Serializable {
         return new ArrayList<>();
     }
 
-    /*public List<String> getPermissionsList() {
-        if (this.permissions.length() > 0) {
-            return Arrays.asList(this.permissions.split(","));
-        }
-        return new ArrayList<>();
-    }*/
+
 
 
 

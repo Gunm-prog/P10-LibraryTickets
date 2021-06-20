@@ -38,12 +38,6 @@ public class UserPrincipal implements UserDetails {
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
-        /*// Extract permissions
-        this.userJwt.getPermissionsList().forEach( p -> {
-            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(p);
-            grantedAuthorities.add(grantedAuthority);
-        });*/
-        // Extract roles
         this.userJwt.getRolesList().forEach( r -> {
             GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + r);
             grantedAuthorities.add(grantedAuthority);

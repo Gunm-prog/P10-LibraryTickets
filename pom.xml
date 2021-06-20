@@ -2,24 +2,36 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
+	<!-- Parent information -->
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.3.3.RELEASE</version>
+		<version>2.2.4.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.emilie</groupId>
 	<artifactId>Lib7</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
+
+	<!-- General information -->
 	<name>Lib7</name>
 	<description>Demo project for Spring Boot</description>
-	<properties>
-		<java.version>11</java.version>
-		<spring-cloud.version>2020.0.2</spring-cloud.version>
-	</properties>
-	<dependencies>
 
+	<!-- ============================================================= -->
+	<!--                           Properties                          -->
+	<!-- ============================================================= -->
+	<properties>
+		<java.version>1.8</java.version>
+		<spring-cloud.version>Hoxton.SR5</spring-cloud.version>
+		<!--<spring-cloud.version>2020.0.2</spring-cloud.version>-->
+	</properties>
+
+	<!-- ============================================================= -->
+	<!--                           Dependencies                         -->
+	<!-- ============================================================= -->
+	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -53,6 +65,13 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+
+
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 		<!--<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -148,9 +167,23 @@
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>-->
 		<!--<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>4.2.1</version>
+		</dependency>-->
+
+		<!--<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-bootstrap</artifactId>
+			<version>3.0.1</version>
+		</dependency>-->
+
+
+		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
-		</dependency>-->
+			<version>3.0.3</version>
+		</dependency>
 
 		<!--<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
@@ -208,7 +241,7 @@
 			<version>5.2.3.Final</version>
 		</dependency>-->
 
-	<!--	<dependency>
+		<!--<dependency>
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator-parent</artifactId>
 			<version>6.2.0.Final</version>
@@ -244,7 +277,7 @@
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
-			<version>RELEASE</version>
+			<version>21.0.1</version>
 			<scope>compile</scope>
 		</dependency>
 
