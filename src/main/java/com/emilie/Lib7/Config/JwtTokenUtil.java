@@ -1,4 +1,4 @@
-package com.emilie.Lib7.Authentication.Config;
+package com.emilie.Lib7.Config;
 
 /*
 import com.auth0.jwt.JWT;
@@ -77,8 +77,7 @@ public class JwtTokenUtil {
 */
 
 
-
-
+import com.emilie.Lib7.Models.Entities.UserPrincipal;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -129,9 +128,10 @@ public class JwtTokenUtil implements Serializable {
     }
 
     //generate token for user
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserPrincipal userPrincipal) {
         Map<String, Object> claims=new HashMap<>();
-        return doGenerateToken( claims, userDetails.getUsername() );
+        claims.put("userId", userPrincipal.getUserId());
+        return doGenerateToken( claims, userPrincipal.getUsername() );
     }
 
     //while creating the token -

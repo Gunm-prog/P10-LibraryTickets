@@ -178,7 +178,7 @@ public class LoanServiceImpl implements LoanService {
 
         User user = loan.getUser();
         UserDto userDto = new UserDto();
-        userDto.setUserId( user.getUserId() );
+        userDto.setUserId( user.getId() );
         userDto.setFirstName( user.getFirstName() );
         userDto.setLastName( user.getLastName() );
         userDto.setUsername( user.getUsername() );
@@ -196,7 +196,7 @@ public class LoanServiceImpl implements LoanService {
         loan.setExtended( loanDto.isExtended() );
 
         User user = new User();
-        user.setUserId(loanDto.getUserDto().getUserId());
+        user.setId(loanDto.getUserDto().getUserId());
         user.setFirstName( loanDto.getUserDto().getFirstName() );
         user.setLastName( loanDto.getUserDto().getLastName() );
         user.setUsername( loanDto.getUserDto().getUsername() );

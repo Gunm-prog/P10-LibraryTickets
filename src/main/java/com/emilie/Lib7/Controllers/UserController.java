@@ -34,6 +34,12 @@ public class UserController {
        return new ResponseEntity<UserDto>(userDto, HttpStatus.OK  );
     }
 
+    @GetMapping("/userAccount")
+    public ResponseEntity<UserDto> getLoggedUser() throws UserNotFoundException{
+        UserDto userDto = userService.getLoggedUser();
+        return new ResponseEntity<UserDto>(userDto, HttpStatus.OK );
+    }
+
     @ApiOperation(value="Retrieve user list from the database")
     @GetMapping("/userList")
     public ResponseEntity<List<UserDto>> findAll() {

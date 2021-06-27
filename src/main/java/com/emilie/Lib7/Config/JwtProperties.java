@@ -1,4 +1,4 @@
-package com.emilie.Lib7.Authentication.Config;
+package com.emilie.Lib7.Config;
 
 public class JwtProperties {
     public static final String SECRET = "SecretKeyJWTs";

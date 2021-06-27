@@ -1,19 +1,6 @@
 package com.emilie.Lib7.Services.impl;
 
-import com.emilie.Lib7.Exceptions.AddressNotFoundException;
-import com.emilie.Lib7.Models.Dtos.AddressDto;
-import com.emilie.Lib7.Models.Dtos.LibraryDto;
-import com.emilie.Lib7.Models.Dtos.UserDto;
-import com.emilie.Lib7.Models.Entities.Address;
-import com.emilie.Lib7.Models.Entities.Library;
-import com.emilie.Lib7.Models.Entities.User;
-import com.emilie.Lib7.Repositories.AddressRepository;
-import com.emilie.Lib7.Repositories.LibraryRepository;
-import com.emilie.Lib7.Repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 @Service
 public class AddressServiceImpl {

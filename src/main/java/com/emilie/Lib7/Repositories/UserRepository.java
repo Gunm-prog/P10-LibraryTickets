@@ -1,6 +1,5 @@
 package com.emilie.Lib7.Repositories;
 
-import com.emilie.Lib7.Models.Dtos.UserDto;
 import com.emilie.Lib7.Models.Entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -16,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
      Optional<User> findByLastName(String lastName);
 
-    UserDto findByUsername(String username);
+    Optional<User> findByUsername(String username);
 
     /*org.springframework.security.core.userdetails.User findByUsername(String username);*/
 

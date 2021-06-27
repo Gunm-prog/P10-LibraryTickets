@@ -13,6 +13,7 @@ import com.emilie.Lib7.Models.Entities.User;
 import com.emilie.Lib7.Repositories.UserRepository;
 import com.emilie.Lib7.Services.contract.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -35,9 +36,16 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    public UserDto getLoggedUser(){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return findByEmail( email );
+    }
+
+
+    @Override
     public UserDto findById(Long id) throws UserNotFoundException {
         Optional<User> optionalUser=userRepository.findById( id );
-        if (!optionalUser.isPresent()) {
+        if (optionalUser.isEmpty()) {
             throw new UserNotFoundException( "User not found" );
         }
         User user=optionalUser.get();
@@ -56,6 +64,7 @@ public class UserServiceImpl implements UserService {
             throw new AddressNotFoundException( "Address not found" );
         }
 
+        System.out.println(userDto);
         User user=userDtoToUser( userDto );
         user=userRepository.save( user );
 
@@ -128,8 +137,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public UserDto findByUsername(String username) throws UserNotFoundException {
+        Optional<User> optionalUser = userRepository.findByUsername( username );
+        if(!optionalUser.isPresent()){
+            throw new UserNotFoundException( "User not found" );
+        }
+        User user = optionalUser.get();
+        return this.userToUserDto( user );
     }
 
 
@@ -171,8 +185,11 @@ public class UserServiceImpl implements UserService {
     // de sorte que this.userToDto( unUser ) placé dans une méthode de UserServiceImpl, appelera la méthode ci-dessous
     private UserDto userToUserDto(User user) {
         UserDto userDto=new UserDto();
-        userDto.setUserId( user.getUserId() );
+        userDto.setUserId( user.getId() );
         userDto.setUsername( user.getUsername() );
+        userDto.setPassword(user.getPassword());
+        userDto.setRoles( user.getRoles() );
+        userDto.setActive( user.isActive() );
         userDto.setEmail( user.getEmail() );
         userDto.setLastName( user.getLastName() );
         userDto.setFirstName( user.getFirstName() );
@@ -208,9 +225,12 @@ public class UserServiceImpl implements UserService {
 
     private User userDtoToUser(UserDto userDto) {
         User user=new User();
-        user.setUserId( userDto.getUserId() );
+        user.setId( userDto.getUserId() );
         user.setUsername( userDto.getUsername() );
+        user.setPassword( userDto.getPassword() );
         user.setEmail( userDto.getEmail() );
+        user.setRoles( userDto.getRoles() );
+        user.setActive( userDto.isActive() );
         user.setFirstName( userDto.getFirstName() );
         user.setLastName( userDto.getLastName() );
 

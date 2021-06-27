@@ -1,6 +1,6 @@
-package com.emilie.Lib7.Authentication.Config;
+package com.emilie.Lib7.Config;
 
-import com.emilie.Lib7.Authentication.Service.UserDetailsServiceImpl;
+import com.emilie.Lib7.Services.impl.UserDetailsServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,7 +35,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String jwtToken = null;
         // JWT Token is in the form "Bearer token". Remove Bearer word and get
         // only the Token
-        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
+        if (requestTokenHeader != null/* && requestTokenHeader.startsWith("Bearer ")*/) {
             jwtToken = requestTokenHeader.substring(7);
             try {
                 username = jwtTokenUtil.getUsernameFromToken(jwtToken);

@@ -1,14 +1,14 @@
-package com.emilie.Lib7.Authentication.Web;
+package com.emilie.Lib7.Controllers;
 
-import com.emilie.Lib7.Authentication.Config.JwtResponse;
-import com.emilie.Lib7.Authentication.Config.JwtTokenUtil;
-import com.emilie.Lib7.Authentication.Dto.UserJwtDto;
-import com.emilie.Lib7.Authentication.Repository.UserJwtRepository;
-import com.emilie.Lib7.Authentication.Service.UserDetailsServiceImpl;
-import com.emilie.Lib7.Authentication.entities.UserJwt;
+import com.emilie.Lib7.Config.JwtTokenUtil;
 import com.emilie.Lib7.Exceptions.AddressNotFoundException;
 import com.emilie.Lib7.Exceptions.UserAlreadyExistException;
 import com.emilie.Lib7.Models.Dtos.UserDto;
+import com.emilie.Lib7.Models.Dtos.UserJwtDto;
+import com.emilie.Lib7.Models.Entities.User;
+import com.emilie.Lib7.Models.Entities.UserPrincipal;
+import com.emilie.Lib7.Repositories.UserRepository;
+import com.emilie.Lib7.Services.impl.UserDetailsServiceImpl;
 import com.emilie.Lib7.Services.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +36,7 @@ public class JwtAuthenticationController {
     private UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Autowired
-    private UserJwtRepository userJwtRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private UserServiceImpl userServiceImpl;
@@ -47,6 +46,19 @@ public class JwtAuthenticationController {
 
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+    public String createAuthenticationToken(@RequestBody UserJwtDto userJwtDto) throws Exception {
+
+        authenticate( userJwtDto.getUsername(), userJwtDto.getPassword() );
+
+        UserPrincipal userPrincipal=userDetailsServiceImpl.loadUserByUsername( userJwtDto.getUsername() );
+
+        return jwtTokenUtil.generateToken( userPrincipal );
+       /* System.out.println( "test" );
+        System.out.println( token );
+        return ResponseEntity.ok( new JwtResponse( token ) );*/
+    }
+
+  /*  @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody UserJwtDto userJwtDto) throws Exception {
 
         authenticate(userJwtDto.getUsername(), userJwtDto.getPassword());
@@ -57,7 +69,7 @@ public class JwtAuthenticationController {
         System.out.println("test");
         System.out.println(token);
         return ResponseEntity.ok(new JwtResponse(token));
-    }
+    }*/
 
     private void authenticate(String username, String password) throws Exception {
         try {
@@ -71,7 +83,7 @@ public class JwtAuthenticationController {
 
     @PostMapping(value="/register")
     public ResponseEntity<?> register(@RequestBody UserDto userDto) throws UserAlreadyExistException {
-        Optional<UserJwt> optionalUserJwt=userJwtRepository.findByUsername( userDto.getUsername() );
+        Optional<User> optionalUserJwt=userRepository.findByEmail( userDto.getEmail() );
         System.out.println(optionalUserJwt);
         if (optionalUserJwt.isPresent()) {
             throw new UserAlreadyExistException( "Email already exists" );
@@ -81,12 +93,14 @@ public class JwtAuthenticationController {
         }
 
         String hashPassword = bCryptPasswordEncoder.encode( userDto.getPassword() );
-        UserJwt userJwt = new UserJwt();
-        userJwt.setPassword( hashPassword );
-        userJwt.setUsername( userDto.getEmail() );
-        userJwt.setActive( true );
-        userJwt.setRoles("ROLE_CUSTOMER");
-        userJwt = userDetailsServiceImpl.save(userJwt);
+
+        System.out.println(hashPassword);
+        userDto.setPassword( hashPassword );
+        System.out.println( userDto.getPassword());
+        userDto.setActive( true );
+        userDto.setRoles("ROLE_CUSTOMER");
+
+        /*User user= userDetailsServiceImpl.save( userDto );*/
 
 
         UserDto userDto1=userServiceImpl.save( userDto );

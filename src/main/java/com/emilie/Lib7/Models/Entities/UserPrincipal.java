@@ -1,4 +1,4 @@
-package com.emilie.Lib7.Authentication.entities;
+package com.emilie.Lib7.Models.Entities;
 
 
 import org.springframework.security.core.GrantedAuthority;
@@ -14,18 +14,18 @@ import java.util.List;
  */
 public class UserPrincipal implements UserDetails {
 
-    private final UserJwt userJwt;
+    private final User user;
 
-    public UserPrincipal(UserJwt userJwt) {
-        this.userJwt=userJwt;
+    public UserPrincipal(User user) {
+        this.user=user;
     }
 
-        public UserJwt getUserAuthentication() {
-            return userJwt;
+        public User getUserAuthentication() {
+            return user;
         }
 
         public Long getUserId(){
-            return this.userJwt.getId();
+            return this.user.getId();
         }
 
     /**
@@ -38,7 +38,7 @@ public class UserPrincipal implements UserDetails {
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
-        this.userJwt.getRolesList().forEach( r -> {
+        this.user.getRolesList().forEach( r -> {
             GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + r);
             grantedAuthorities.add(grantedAuthority);
         });
@@ -48,7 +48,7 @@ public class UserPrincipal implements UserDetails {
     }
 
     public String getRole(){
-        return this.userJwt.getRoles();
+        return this.user.getRoles();
     }
 
     /**
@@ -58,7 +58,7 @@ public class UserPrincipal implements UserDetails {
      */
     @Override
     public String getPassword() {
-        return this.userJwt.getPassword();
+        return this.user.getPassword();
     }
 
     /**
@@ -68,7 +68,7 @@ public class UserPrincipal implements UserDetails {
      */
     @Override
     public String getUsername() {
-        return this.userJwt.getUsername();
+        return this.user.getUsername();
     }
 
     /**
@@ -114,6 +114,6 @@ public class UserPrincipal implements UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return this.userJwt.isActive();
+        return this.user.isActive();
     }
 }

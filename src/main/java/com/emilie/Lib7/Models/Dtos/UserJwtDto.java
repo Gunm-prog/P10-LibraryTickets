@@ -1,4 +1,4 @@
-package com.emilie.Lib7.Authentication.Dto;
+package com.emilie.Lib7.Models.Dtos;
 
 
 import lombok.Data;

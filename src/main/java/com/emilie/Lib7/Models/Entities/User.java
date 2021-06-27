@@ -1,36 +1,54 @@
 package com.emilie.Lib7.Models.Entities;
 
 
-
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
+/**
+ * @author emilie
+ */
 @Entity
-@Table(name="user")
-@Data
+@Table(name = "user")
+@Getter
+@Setter
 @NoArgsConstructor
 public class User implements Serializable {
 
-    public static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="id")
-    private Long userId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "username", unique=true, nullable = false)
+    private String username;
+
+    @Column(name = "password", nullable = false)
+    private String password;
+
+    @Column(name = "active")
+    private boolean active;
+
+    @Column(name = "roles", nullable = false)
+    private String roles;
+
+    /*@Column(name = "permissions")
+    private String permissions;*/
 
     @Column(name="last_name", nullable=false)
     private String lastName;
 
     @Column(name="first_name", nullable=false)
     private String firstName;
-
-    @Column(name="user_name", nullable=false)
-    private String username;
-
 
     @Column(name="email", length=50, unique=true, nullable=false)
     private String email;
@@ -41,18 +59,17 @@ public class User implements Serializable {
     @Embedded
     private Address address;
 
-   /* @Column(name="cardNumber", length=50, unique=true, nullable=false)
-    private String cardNumber;
 
-    @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name="address_id")
-    private Address address;
-
-    @Column(name="registration_date", nullable=false)
-    private DateTime registrationDate;
+    public List<String> getRolesList() {
+        if (this.roles.length() > 0) {
+            return Arrays.asList(this.roles.split(","));
+        }
+        return new ArrayList<>();
+    }
 
 
-*/
+
 
 
 }
+

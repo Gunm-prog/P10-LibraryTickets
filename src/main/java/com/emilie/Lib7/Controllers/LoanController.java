@@ -61,7 +61,10 @@ public class LoanController {
         return new ResponseEntity<LoanDto>(loanDto1, HttpStatus.OK  );
     }
 
-    @ApiOperation( value="delete loan from database by id" )
+ /*   @GetMapping("/extendLoan/{id}")
+    public List<LoanDto>*/
+
+    /*@ApiOperation( value="delete loan from database by id" )
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String>deleteById(@PathVariable(value="id") Long id) throws LoanNotFoundException{
         if (loanService.deleteById( id )){
@@ -69,5 +72,5 @@ public class LoanController {
         }else {
             return ResponseEntity.status( 500 ).build();
         }
-    }
+    }*/
 }

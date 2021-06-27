@@ -1,4 +1,4 @@
-package com.emilie.Lib7.Authentication.Config;
+package com.emilie.Lib7.Config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -56,6 +56,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/authenticate").permitAll()
                 .and()
                 .authorizeRequests().antMatchers("/api/v1/users/createUserAccount").permitAll()
+                .and()
+                .authorizeRequests().antMatchers("/users/test").permitAll()
                 .and()
                 .authorizeRequests().antMatchers("/register").permitAll().
 

@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface UserService {
 
+    UserDto getLoggedUser();
+
     UserDto findById(Long id) throws UserNotFoundException;
 
 
