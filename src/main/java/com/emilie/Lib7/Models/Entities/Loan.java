@@ -38,8 +38,8 @@ public class Loan implements Serializable {
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date loanEndDate;
 
-   @Column(name = "expected_return_date", nullable = false)
-   private Date expectedReturnDate;
+   /*@Column(name = "expected_return_date", nullable = false)
+   private Date expectedReturnDate;*/
 
     @Column(name="extended", nullable=false)
     private boolean extended;

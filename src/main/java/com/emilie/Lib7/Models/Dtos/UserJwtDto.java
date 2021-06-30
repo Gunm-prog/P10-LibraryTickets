@@ -44,7 +44,7 @@ public class UserJwtDto implements UserDetails {
     }
 
 
-    /*public UserJwtDto(UserJwtRepository userAUthenticationRepository) {
+   /* public UserJwtDto(UserRepository userAUthenticationRepository) {
         super( userAUthenticationRepository );
     }*/
 }

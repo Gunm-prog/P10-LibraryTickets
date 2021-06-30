@@ -34,6 +34,7 @@ public class UserController {
        return new ResponseEntity<UserDto>(userDto, HttpStatus.OK  );
     }
 
+    @ApiOperation( "retrieve a user with token and id, if the user is registered in database" )
     @GetMapping("/userAccount")
     public ResponseEntity<UserDto> getLoggedUser() throws UserNotFoundException{
         UserDto userDto = userService.getLoggedUser();

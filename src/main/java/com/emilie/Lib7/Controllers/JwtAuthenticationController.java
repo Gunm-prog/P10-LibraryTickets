@@ -51,7 +51,7 @@ public class JwtAuthenticationController {
         authenticate( userJwtDto.getUsername(), userJwtDto.getPassword() );
 
         UserPrincipal userPrincipal=userDetailsServiceImpl.loadUserByUsername( userJwtDto.getUsername() );
-
+        System.out.println(userPrincipal);
         return jwtTokenUtil.generateToken( userPrincipal );
        /* System.out.println( "test" );
         System.out.println( token );
@@ -98,7 +98,7 @@ public class JwtAuthenticationController {
         userDto.setPassword( hashPassword );
         System.out.println( userDto.getPassword());
         userDto.setActive( true );
-        userDto.setRoles("ROLE_CUSTOMER");
+        userDto.setRoles("CUSTOMER");
 
         /*User user= userDetailsServiceImpl.save( userDto );*/
 
