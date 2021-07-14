@@ -20,6 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     }
 
+
     @Override
     public UserPrincipal loadUserByUsername(String username) {
         Optional<User> userJwt= userRepository.findByUsername(username);
@@ -32,5 +33,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public User save(User user) {
        return this.userRepository.save( user );
     }
+
+
+
+
 }
 

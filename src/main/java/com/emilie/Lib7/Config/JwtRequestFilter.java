@@ -41,7 +41,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         token =token.replace(JwtProperties.TOKEN_PREFIX,"");
-        System.out.println(token);
+
 
         try {
 
@@ -51,11 +51,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     .verify(token);
 
             String username = jwt.getSubject();
-            System.out.println(username);
             if(username != null) {
 
                 // 4. Retrieve the user into bdd with username
                 UserPrincipal userPrincipal = userDetailsServiceImpl.loadUserByUsername(username);
+
 
                 // 5. Create auth object
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
@@ -72,6 +72,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         chain.doFilter(request, response);
     }
+
+
 
 
 

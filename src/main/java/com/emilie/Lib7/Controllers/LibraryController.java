@@ -4,10 +4,8 @@ package com.emilie.Lib7.Controllers;
 
 import com.emilie.Lib7.Exceptions.LibraryNotFoundException;
 import com.emilie.Lib7.Exceptions.LoanAlreadyExistsException;
+import com.emilie.Lib7.Models.Dtos.CopyDto;
 import com.emilie.Lib7.Models.Dtos.LibraryDto;
-import com.emilie.Lib7.Models.Entities.Address;
-import com.emilie.Lib7.Services.contract.BookService;
-import com.emilie.Lib7.Services.contract.CopyService;
 import com.emilie.Lib7.Services.contract.LibraryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("api/v1/libraries")
@@ -39,6 +38,14 @@ public class LibraryController {
 
     @GetMapping("/libraryList")
     public List<LibraryDto> findAll(){return this.libraryService.findAll();}
+
+    @GetMapping("/{id}/copyCatalog")
+    public Set<CopyDto> findCopiesByLibraryId(@PathVariable(value="id") Long id){
+        return libraryService.findCopiesByLibraryId( id );
+    }
+
+
+
 
 
     @PostMapping("/newLibrary")

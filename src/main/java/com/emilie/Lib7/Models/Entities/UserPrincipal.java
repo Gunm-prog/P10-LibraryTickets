@@ -20,10 +20,7 @@ public class UserPrincipal implements UserDetails {
         this.user=user;
     }
 
-        /*public User getLoggedUser(){return user;}*/
-        public User getUserAuthentication() {
-            return user;
-        }
+
 
         public Long getUserId(){
             return this.user.getId();

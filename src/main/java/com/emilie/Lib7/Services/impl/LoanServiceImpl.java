@@ -82,8 +82,8 @@ public class LoanServiceImpl implements LoanService {
         Loan loan = loanDtoToLoan( loanDto );
         loan.setUser( optionalUser.get() );
         loan.setCopy( optionalCopy.get() );
-        loan.setLoanStartDate(makePeriodDate( 0 ));
-        loan.setLoanEndDate( makePeriodDate( 30 ) );
+        loan.setLoanStartDate(makePeriodDate( 0, null ));
+        loan.setLoanEndDate( makePeriodDate( 30, null ) );
         loan.setExtended( false );
         loan = loanRepository.save( loan );
         return loanToLoanDto( loan );
@@ -141,12 +141,13 @@ public class LoanServiceImpl implements LoanService {
             throw new ImpossibleExtendLoanException( "impossible extend of loan" );
         }
 
-        Date date = makePeriodDate(30);
+
+        Date date = makePeriodDate(30, loan.getLoanEndDate());
         loan.setLoanEndDate( date );
         loan.setExtended( true );
 
         loan = loanRepository.save( loan );
-        return loanDto;
+        return loanToLoanDto( loan );
     }
 
 
@@ -207,12 +208,17 @@ public class LoanServiceImpl implements LoanService {
 
     }
 
-    private Date makePeriodDate(int numberOfDays){
+    private Date makePeriodDate(int numberOfDays, Date initialEndDate){
+
         LocalDate localDate = LocalDate.now();
+
+        if (initialEndDate != null){
+            localDate = initialEndDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        }
+
         localDate= localDate.plusDays( numberOfDays );
         Instant instant = localDate.atStartOfDay( ZoneId.systemDefault() ).toInstant();
         Date date = Date.from(instant);
-
         return date;
     }
 

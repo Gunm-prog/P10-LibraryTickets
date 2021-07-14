@@ -4,12 +4,8 @@ package com.emilie.Lib7.Services.impl;
 import com.emilie.Lib7.Exceptions.AddressNotFoundException;
 import com.emilie.Lib7.Exceptions.UserAlreadyExistException;
 import com.emilie.Lib7.Exceptions.UserNotFoundException;
-import com.emilie.Lib7.Models.Dtos.AddressDto;
-import com.emilie.Lib7.Models.Dtos.LoanDto;
-import com.emilie.Lib7.Models.Dtos.UserDto;
-import com.emilie.Lib7.Models.Entities.Address;
-import com.emilie.Lib7.Models.Entities.Loan;
-import com.emilie.Lib7.Models.Entities.User;
+import com.emilie.Lib7.Models.Dtos.*;
+import com.emilie.Lib7.Models.Entities.*;
 import com.emilie.Lib7.Repositories.UserRepository;
 import com.emilie.Lib7.Services.contract.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +34,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getLoggedUser(){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return findByEmail( email );
+        UserDto userDto = findByEmail( email );
+        return userDto;
     }
 
 
@@ -56,13 +53,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto save(UserDto userDto) throws UserAlreadyExistException {
-        Optional<User> optionalUser=userRepository.findByEmail( userDto.getEmail() );
-        if (optionalUser.isPresent()) {
-            throw new UserAlreadyExistException( "Email already exists" );
-        }
-        if(userDto.getAddressDto() == null){
-            throw new AddressNotFoundException( "Address not found" );
-        }
+        isNewUserValid( userDto );
 
         System.out.println(userDto);
         User user=userDtoToUser( userDto );
@@ -71,19 +62,43 @@ public class UserServiceImpl implements UserService {
         return userToUserDto( user );
     }
 
+    @Override
+    public void isNewUserValid(UserDto userDto){
+        Optional<User> optionalUser=userRepository.findByEmail( userDto.getEmail() );
+        if (optionalUser.isPresent()) {
+            throw new UserAlreadyExistException( "Email already exists" );
+        }
+        if(userDto.getAddressDto() == null){
+            throw new AddressNotFoundException( "Address not found" );
+        }
+    }
+
 
 
     @Override
     public UserDto update(UserDto userDto) {
         Optional<User> optionalUser=userRepository.findById( userDto.getUserId() );
-        User user=userDtoToUser( userDto );
+        if (userDto.getAddressDto() == null){
+            throw new AddressNotFoundException( "Address not found" );
+        }
+        if (!optionalUser.isPresent()){
+            throw new UserNotFoundException("User not found");
+        }
+
+        User user=optionalUser.get();
+        System.out.println("ligne 91 : " + user);
+        //TODO username refresh token
+        /*user.setUsername( userDto.getUsername() );*/
+        //TODO Email refresh token
+        /*user.setEmail( userDto.getEmail() );*/
+        user.setFirstName( userDto.getFirstName() );
+        user.setLastName( userDto.getLastName() );
+        user.setAddress(makeAddress(userDto.getAddressDto() ));
+        System.out.println(user);
         user=userRepository.save( user );
         return userToUserDto( user );
     }
 
-
-   /* @Override
-    public*/
 
 
     @Override
@@ -197,22 +212,15 @@ public class UserServiceImpl implements UserService {
         Set<LoanDto> loanDtos = new HashSet<>();
         if (user.getLoans() != null){
             for (Loan loan : user.getLoans()){
-                LoanDto loanDto = new LoanDto();
-                loanDto.setId(loan.getId());
-                loanDto.setLoanStartDate(loan.getLoanStartDate());
-                loanDto.setLoanEndDate( loan.getLoanEndDate() );
-                loanDto.setExtended( loan.isExtended() );
+                LoanDto loanDto = makeLoanDto( loan );
                 loanDtos.add(loanDto);
             }
             userDto.setLoanDtos( loanDtos );
 
         }
 
-        AddressDto addressDto = new AddressDto();
-        addressDto.setNumber( user.getAddress().getNumber() );
-        addressDto.setStreet( user.getAddress().getStreet() );
-        addressDto.setZipCode( user.getAddress().getZipCode() );
-        addressDto.setCity( user.getAddress().getCity() );
+        AddressDto addressDto =  makeAddressDto(user.getAddress());
+
         userDto.setAddressDto( addressDto );
 
 
@@ -237,26 +245,129 @@ public class UserServiceImpl implements UserService {
         Set<Loan> loans = new HashSet<>();
         if (userDto.getLoanDtos() != null){
             for(LoanDto loanDto : userDto.getLoanDtos()){
-                Loan loan = new Loan();
-                loan.setId( loanDto.getId() );
-                loan.setLoanStartDate( loanDto.getLoanStartDate() );
-                loan.setLoanEndDate( loanDto.getLoanEndDate() );
-                loan.setExtended( loanDto.isExtended() );
+                Loan loan = makeLoan( loanDto );
                 loans.add(loan);
             }
             user.setLoans( loans );
         }
 
-        Address address = new Address();
-        address.setNumber( userDto.getAddressDto().getNumber() );
-        address.setStreet( userDto.getAddressDto().getStreet() );
-        address.setZipCode( userDto.getAddressDto().getZipCode() );
-        address.setCity( userDto.getAddressDto().getCity() );
+        Address address =  makeAddress(userDto.getAddressDto());
         user.setAddress( address );
 
         return user;
     }
 
+
+    private AddressDto makeAddressDto(Address address){
+
+        AddressDto addressDto = new AddressDto();
+        addressDto.setNumber( address.getNumber() );
+        addressDto.setStreet( address.getStreet() );
+        addressDto.setZipCode( address.getZipCode() );
+        addressDto.setCity( address.getCity() );
+
+        return addressDto;
+    }
+
+    private Address makeAddress(AddressDto addressDto){
+
+        Address address = new Address();
+        address.setNumber( addressDto.getNumber() );
+        address.setStreet( addressDto.getStreet() );
+        address.setZipCode( addressDto.getZipCode() );
+        address.setCity( addressDto.getCity() );
+
+        return address;
+    }
+
+    private LoanDto makeLoanDto(Loan loan){
+        LoanDto loanDto = new LoanDto();
+        loanDto.setId(loan.getId());
+        loanDto.setLoanStartDate(loan.getLoanStartDate());
+        loanDto.setLoanEndDate( loan.getLoanEndDate() );
+        loanDto.setExtended( loan.isExtended() );
+        loanDto.setCopyDto( makeCopyDto( loan.getCopy() ) );
+        return loanDto;
+    }
+
+    private Loan makeLoan(LoanDto loanDto){
+
+        Loan loan = new Loan();
+        loan.setId( loanDto.getId() );
+        loan.setLoanStartDate( loanDto.getLoanStartDate() );
+        loan.setLoanEndDate( loanDto.getLoanEndDate() );
+        loan.setExtended( loanDto.isExtended() );
+        loan.setCopy( makeCopy( loanDto.getCopyDto() ) );
+        return loan;
+    }
+
+    private CopyDto makeCopyDto(Copy copy){
+        CopyDto copyDto = new CopyDto();
+        copyDto.setId(copy.getId());
+        copyDto.setAvailable( copy.isAvailable() );
+        copyDto.setBookDto( makeBookDto( copy.getBook() ) );
+        copyDto.setLibraryDto( makeLibraryDto( copy.getLibrary() ) );
+        return copyDto;
+    }
+
+    private Copy makeCopy(CopyDto copyDto){
+        Copy copy = new Copy();
+        copy.setId( copyDto.getId() );
+        copy.setAvailable( copyDto.isAvailable() );
+        copy.setBook( makeBook( copyDto.getBookDto() ) );
+        copy.setLibrary( makeLibrary( copyDto.getLibraryDto() ) );
+        return copy;
+    }
+
+    private BookDto makeBookDto(Book book){
+        BookDto bookDto = new BookDto();
+        bookDto.setBookId( book.getBookId() );
+        bookDto.setTitle( book.getTitle() );
+        bookDto.setIsbn( book.getIsbn() );
+        bookDto.setAuthorDto( makeAuthorDto( book.getAuthor() ) );
+        return bookDto;
+    }
+
+    private Book makeBook(BookDto bookDto){
+        Book book = new Book();
+        book.setBookId(bookDto.getBookId());
+        book.setTitle( bookDto.getTitle() );
+        book.setIsbn( bookDto.getIsbn() );
+        book.setAuthor(makeAuthor(bookDto.getAuthorDto()));
+        return book;
+    }
+
+    private LibraryDto makeLibraryDto(Library library){
+        LibraryDto libraryDto = new LibraryDto();
+        libraryDto.setLibraryId(library.getLibraryId() );
+        libraryDto.setName( library.getName() );
+        return libraryDto;
+    }
+
+    private Library makeLibrary(LibraryDto libraryDto){
+        Library library = new Library();
+        library.setLibraryId( libraryDto.getLibraryId() );
+        library.setName( libraryDto.getName() );
+        library.setPhoneNumber( libraryDto.getPhoneNumber() );
+        library.setAddress(makeAddress(libraryDto.getAddressDto() ) );
+        return library;
+    }
+
+    private AuthorDto makeAuthorDto(Author author){
+        AuthorDto authorDto = new AuthorDto();
+        authorDto.setAuthorId( author.getAuthorId() );
+        authorDto.setFirstName( author.getFirstName() );
+        authorDto.setLastName( author.getLastName() );
+        return authorDto;
+    }
+
+    private Author makeAuthor(AuthorDto authorDto){
+        Author author = new Author();
+        author.setAuthorId( authorDto.getAuthorId());
+        author.setFirstName( authorDto.getFirstName() );
+        author.setLastName( authorDto.getLastName() );
+        return author;
+    }
 
 
 }

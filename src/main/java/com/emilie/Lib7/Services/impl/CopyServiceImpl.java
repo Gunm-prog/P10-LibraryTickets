@@ -1,22 +1,17 @@
 package com.emilie.Lib7.Services.impl;
 
 import com.emilie.Lib7.Exceptions.BookNotFoundException;
-import com.emilie.Lib7.Exceptions.CopyAlreadyExistException;
 import com.emilie.Lib7.Exceptions.CopyNotFoundException;
 import com.emilie.Lib7.Exceptions.LibraryNotFoundException;
-import com.emilie.Lib7.Models.Dtos.AuthorDto;
 import com.emilie.Lib7.Models.Dtos.BookDto;
 import com.emilie.Lib7.Models.Dtos.CopyDto;
 import com.emilie.Lib7.Models.Dtos.LibraryDto;
-import com.emilie.Lib7.Models.Entities.Author;
 import com.emilie.Lib7.Models.Entities.Book;
 import com.emilie.Lib7.Models.Entities.Copy;
 import com.emilie.Lib7.Models.Entities.Library;
 import com.emilie.Lib7.Repositories.BookRepository;
 import com.emilie.Lib7.Repositories.CopyRepository;
 import com.emilie.Lib7.Repositories.LibraryRepository;
-import com.emilie.Lib7.Services.contract.AuthorsService;
-import com.emilie.Lib7.Services.contract.BookService;
 import com.emilie.Lib7.Services.contract.CopyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,14 +46,13 @@ public class CopyServiceImpl implements CopyService {
     @Override
     public CopyDto findById(Long id) throws CopyNotFoundException {
         Optional<Copy> optionalCopy=copyRepository.findById( id );
-        if (!optionalCopy.isPresent()) {
+        if (optionalCopy.isEmpty()) {
             throw new CopyNotFoundException( "copy not found" );
         }
         Copy copy=optionalCopy.get();
         return copyToCopyDto( copy );
 
     }
-
 
 
     @Override

@@ -149,6 +149,27 @@ public class JwtTokenUtil implements Serializable {
     }
 
 
+
+/*
+    public Long getCurrentUserId(String accessToken){
+
+        return JWT.decode( accessToken ).getClaim( "userId" ).asLong();
+    }
+*/
+
+
+  /*  public void isCurrentUser(RequestHeader requestHeader, Long id){
+
+        String accessToken = requestHeader.value();
+        System.out.println(accessToken);
+        Long currentId = getCurrentUserId( accessToken );
+
+        if (id != currentId){
+            throw new UnauthorizedException("not the current user");
+        }
+    }*/
+
+
     /*//generate token for user
     public String generateToken(UserPrincipal userPrincipal) {
         Map<String, Object> claims=new HashMap<>();

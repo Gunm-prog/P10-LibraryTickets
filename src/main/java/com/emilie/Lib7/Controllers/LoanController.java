@@ -55,8 +55,9 @@ public class LoanController {
         return new ResponseEntity<LoanDto>(loanDto1, HttpStatus.OK);
     }
 
-    @PutMapping("/extendLoan")
-    public ResponseEntity<LoanDto>extendLoan(@RequestBody  LoanDto loanDto){
+    @PutMapping("/extendLoan/{id}")
+    public ResponseEntity<LoanDto>extendLoan(@PathVariable(value="id") Long id){
+        LoanDto loanDto = loanService.findById(id);
         LoanDto loanDto1 = loanService.extendLoan( loanDto );
         return new ResponseEntity<LoanDto>(loanDto1, HttpStatus.OK  );
     }

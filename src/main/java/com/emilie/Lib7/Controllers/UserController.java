@@ -1,15 +1,13 @@
 package com.emilie.Lib7.Controllers;
 
 
-import com.emilie.Lib7.Exceptions.UserAlreadyExistException;
 import com.emilie.Lib7.Exceptions.UserNotFoundException;
 import com.emilie.Lib7.Models.Dtos.UserDto;
-import io.swagger.annotations.ApiOperation;
 import com.emilie.Lib7.Services.contract.UserService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +20,12 @@ public class UserController {
     private final UserService userService;
 
 
+
+
     @Autowired
     public UserController(UserService userService) {
         this.userService=userService;
+
     }
 
     @ApiOperation(value="Retrieve a user account thanks to its Id, if the user is registered in database")
@@ -38,6 +39,7 @@ public class UserController {
     @GetMapping("/userAccount")
     public ResponseEntity<UserDto> getLoggedUser() throws UserNotFoundException{
         UserDto userDto = userService.getLoggedUser();
+        userDto.setPassword( "" );
         return new ResponseEntity<UserDto>(userDto, HttpStatus.OK );
     }
 
@@ -48,19 +50,30 @@ public class UserController {
         return new ResponseEntity<List<UserDto>>(userDtos, HttpStatus.OK  );
     }
 
-    @ApiOperation( value="Create an account saved in database containing the informations given by user" )
+    /*@ApiOperation( value="Create an account saved in database containing the informations given by user" )
     @PostMapping("/createUserAccount")
     public ResponseEntity<String> save(@RequestBody UserDto userDto) throws UserAlreadyExistException {
         userService.save( userDto );
         return ResponseEntity.status( HttpStatus.CREATED ).build();
-    }
+    }*/
 
     @ApiOperation( value="update user saving modifications in database" )
-    @PutMapping("/updateUser")
-    public ResponseEntity<UserDto> update(@RequestBody UserDto userDto) {
-        UserDto userDto1=userService.update( userDto );
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<UserDto> updateUser(@PathVariable(value="id") Long id, @RequestBody UserDto userDto) {
+        UserDto userDto1 = userService.update( userDto );
         return new ResponseEntity<UserDto>( userDto1, HttpStatus.OK );
     }
+
+    /*@ApiOperation( value="update user saving modifications in database" )
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDto> update( @PathVariable(value="id") Long id, @RequestBody UserDto userDto
+                                         *//* ,RequestHeader requestHeader*//*) {
+        *//*jwtTokenUtil.isCurrentUser( requestHeader, id );*//*
+        UserDto userDto1=userService.update( userDto );
+        return new ResponseEntity<UserDto>( userDto1, HttpStatus.OK );
+    }*/
+
 
     @ApiOperation( value="delete user from database by id" )
     @DeleteMapping("/delete/{id}")

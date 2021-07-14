@@ -3,13 +3,8 @@ package com.emilie.Lib7.Controllers;
 
 import com.emilie.Lib7.Exceptions.BookAlreadyExistException;
 import com.emilie.Lib7.Exceptions.BookNotFoundException;
-import com.emilie.Lib7.Models.Dtos.AuthorDto;
 import com.emilie.Lib7.Models.Dtos.BookDto;
-
-import com.emilie.Lib7.Models.Entities.Author;
 import com.emilie.Lib7.Services.contract.BookService;
-
-import com.emilie.Lib7.Services.contract.LibraryService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -64,8 +59,8 @@ public class BookController {
 
 
     @ApiOperation( value="update book (like new edition???) and save modifications in database" )
-    @PutMapping("/updateBook")
-    public ResponseEntity<BookDto> update(@RequestBody BookDto bookDto){
+    @PutMapping("/{id}")
+    public ResponseEntity<BookDto> update(@RequestBody BookDto bookDto, @PathVariable(value="id") Long id){
         BookDto bookDto1 = bookService.update( bookDto );
         return  new ResponseEntity<BookDto>(bookDto1, HttpStatus.OK);
     }

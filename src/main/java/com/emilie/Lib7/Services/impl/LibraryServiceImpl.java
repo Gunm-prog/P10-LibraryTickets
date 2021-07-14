@@ -4,9 +4,7 @@ package com.emilie.Lib7.Services.impl;
 
 import com.emilie.Lib7.Exceptions.LibraryAlreadyExistException;
 import com.emilie.Lib7.Exceptions.LibraryNotFoundException;
-import com.emilie.Lib7.Models.Dtos.AddressDto;
-import com.emilie.Lib7.Models.Dtos.CopyDto;
-import com.emilie.Lib7.Models.Dtos.LibraryDto;
+import com.emilie.Lib7.Models.Dtos.*;
 import com.emilie.Lib7.Models.Entities.Copy;
 import com.emilie.Lib7.Models.Entities.Library;
 import com.emilie.Lib7.Repositories.BookRepository;
@@ -104,12 +102,18 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
 
+    @Override
+    public Set<CopyDto> findCopiesByLibraryId(Long id){
+        LibraryDto libraryDto = findById( id );
+        return libraryDto.getCopyDtos();
+    }
+
+
     private LibraryDto libraryToLibraryDto(Library library) {
         LibraryDto libraryDto=new LibraryDto();
         libraryDto.setLibraryId( library.getLibraryId() );
         libraryDto.setName( library.getName() );
         libraryDto.setPhoneNumber( library.getPhoneNumber() );
-
 
         Set<CopyDto> copyDtos=new HashSet<>();
         if (library.getCopies() != null) {
@@ -117,6 +121,24 @@ public class LibraryServiceImpl implements LibraryService {
                 CopyDto copyDto=new CopyDto();
                 copyDto.setId( copy.getId() );
                 copyDto.setAvailable( copy.isAvailable() );
+
+                    BookDto bookDto = new BookDto();
+                    bookDto.setBookId( copy.getBook().getBookId() );
+                    bookDto.setTitle( copy.getBook().getTitle() );
+                    bookDto.setIsbn(copy.getBook().getIsbn());
+                    bookDto.setSummary( copy.getBook().getSummary() );
+
+                        AuthorDto authorDto = new AuthorDto();
+                        authorDto.setAuthorId( copy.getBook().getAuthor().getAuthorId());
+                        authorDto.setLastName( copy.getBook().getAuthor().getLastName() );
+                        authorDto.setFirstName( copy.getBook().getAuthor().getFirstName() );
+
+                    bookDto.setAuthorDto(authorDto);
+
+
+                copyDto.setBookDto( bookDto );
+
+
                 copyDtos.add( copyDto );
             }
             libraryDto.setCopyDtos( copyDtos );
@@ -131,6 +153,8 @@ public class LibraryServiceImpl implements LibraryService {
         library.setName( libraryDto.getName() );
         library.setPhoneNumber( libraryDto.getPhoneNumber() );
 
+
+        //TODO Continuer méthode de conversion comme au-dessus
         Set<Copy> copies=new HashSet<>();
         if (libraryDto.getCopyDtos() != null) {
             for (CopyDto copyDto : libraryDto.getCopyDtos()) {

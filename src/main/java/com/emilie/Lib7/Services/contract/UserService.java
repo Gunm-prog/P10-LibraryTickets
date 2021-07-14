@@ -16,6 +16,8 @@ public interface UserService {
 
     UserDto save(UserDto userDto) throws UserAlreadyExistException;
 
+    void isNewUserValid(UserDto userDto);
+
     UserDto findByUsername(String username);
 
     UserDto findByLastName(String lastName) throws UserNotFoundException;

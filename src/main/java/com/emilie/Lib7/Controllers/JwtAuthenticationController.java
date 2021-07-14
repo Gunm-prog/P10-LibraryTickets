@@ -1,11 +1,9 @@
 package com.emilie.Lib7.Controllers;
 
 import com.emilie.Lib7.Config.JwtTokenUtil;
-import com.emilie.Lib7.Exceptions.AddressNotFoundException;
 import com.emilie.Lib7.Exceptions.UserAlreadyExistException;
 import com.emilie.Lib7.Models.Dtos.UserDto;
 import com.emilie.Lib7.Models.Dtos.UserJwtDto;
-import com.emilie.Lib7.Models.Entities.User;
 import com.emilie.Lib7.Models.Entities.UserPrincipal;
 import com.emilie.Lib7.Repositories.UserRepository;
 import com.emilie.Lib7.Services.impl.UserDetailsServiceImpl;
@@ -19,8 +17,6 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -81,27 +77,25 @@ public class JwtAuthenticationController {
         }
     }
 
-    @PostMapping(value="/register")
-    public ResponseEntity<?> register(@RequestBody UserDto userDto) throws UserAlreadyExistException {
-        Optional<User> optionalUserJwt=userRepository.findByEmail( userDto.getEmail() );
-        System.out.println(optionalUserJwt);
-        if (optionalUserJwt.isPresent()) {
-            throw new UserAlreadyExistException( "Email already exists" );
-        }
-        if(userDto.getAddressDto() == null){
-            throw new AddressNotFoundException( "Address not found" );
-        }
+    @PostMapping(value="/register/employee")
+    /*@PreAuthorize( "hasAnyRole('ADMIN', 'EMPLOYEE')" )*/
+    public ResponseEntity<?> registerEmployee(@RequestBody UserDto userDto) throws UserAlreadyExistException{
+        userDto.setActive( true );
+        userDto.setRoles("EMPLOYEE");
+        String hashPassword = bCryptPasswordEncoder.encode( userDto.getPassword() );
+        userDto.setPassword( hashPassword );
+        UserDto userDto1 = userServiceImpl.save( userDto );
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping(value="/register/customer")
+    public ResponseEntity<?> registerCustomer(@RequestBody UserDto userDto) throws UserAlreadyExistException {
 
         String hashPassword = bCryptPasswordEncoder.encode( userDto.getPassword() );
 
-        System.out.println(hashPassword);
         userDto.setPassword( hashPassword );
-        System.out.println( userDto.getPassword());
         userDto.setActive( true );
         userDto.setRoles("CUSTOMER");
-
-        /*User user= userDetailsServiceImpl.save( userDto );*/
-
 
         UserDto userDto1=userServiceImpl.save( userDto );
         return ResponseEntity.status( HttpStatus.CREATED ).build();

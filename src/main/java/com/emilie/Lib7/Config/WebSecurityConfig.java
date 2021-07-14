@@ -55,14 +55,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // dont authenticate this particular request
                 .authorizeRequests().antMatchers("/authenticate").permitAll()
                 .and()
-                .authorizeRequests().antMatchers("/api/v1/users/createUserAccount").permitAll()
+                .authorizeRequests().antMatchers("/register/customer").permitAll()
                 .and()
+                /*.authorizeRequests().antMatchers("/api/v1/users/createUserAccount").permitAll()
+                .and()*/
                 .authorizeRequests().antMatchers("/users/test").permitAll()
-                .and()
-                .authorizeRequests().antMatchers("/register").permitAll().
+                .antMatchers("/register/employee").hasAnyRole(JwtProperties.ROLE_ADMIN,JwtProperties.ROLE_EMPLOYEE)
+                /*.antMatchers("/edit/**").hasRole(JwtProperties.ROLE_TECHNICAL)*/
+                .antMatchers("/delete/**").hasAnyRole(JwtProperties.ROLE_ADMIN,JwtProperties.ROLE_EMPLOYEE)
+
+
 
                 // all other requests need to be authenticated
-                        anyRequest().authenticated().and().
+                        .anyRequest().authenticated().and().
                 // make sure we use stateless session; session won't be used to
                 // store user's state.
                         exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
