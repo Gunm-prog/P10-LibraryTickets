@@ -34,6 +34,12 @@ public class BookController {
 
     }
 
+    @ApiOperation( value="List books from a library" )
+    @GetMapping("/library/{id}")
+    public ResponseEntity<List<BookDto>> findBooksByLibraryId(@PathVariable(value="id") Long libraryId){
+        List<BookDto> bookDtos =bookService.findBooksByLibraryId( libraryId );
+        return new ResponseEntity<List<BookDto>>(bookDtos, HttpStatus.OK  );
+    }
 
     @ApiOperation( value="Retrieve a book by id, if registered in database" )
     @GetMapping("/{id}")

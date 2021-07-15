@@ -4,10 +4,8 @@ package com.emilie.Lib7.Services.contract;
 
 import com.emilie.Lib7.Exceptions.BookAlreadyExistException;
 import com.emilie.Lib7.Exceptions.BookNotFoundException;
-import com.emilie.Lib7.Models.Dtos.AuthorDto;
 import com.emilie.Lib7.Models.Dtos.BookDto;
 import com.emilie.Lib7.Models.Entities.Author;
-import com.emilie.Lib7.Models.Entities.Book;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -32,5 +30,7 @@ public interface BookService {
     BookDto findByAuthor(Author author);
 
     List<BookDto> findAll();
+
+    List<BookDto> findBooksByLibraryId(Long id);
 
 }

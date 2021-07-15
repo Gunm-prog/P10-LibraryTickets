@@ -11,6 +11,9 @@ import java.util.Optional;
 @Repository
 public interface LibraryRepository extends JpaRepository<Library, Long> {
 
+
+
+
     List<Library> findAll();
 
     Optional<Library> findById(Long id);

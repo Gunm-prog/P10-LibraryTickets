@@ -32,11 +32,7 @@ public class Address implements Serializable{
     @Column(name="city", nullable=false)
     private String city;
 
-    /*@Embedded
-    private User user;
 
-    @Embedded
-    private Library library;*/
 
 
 }

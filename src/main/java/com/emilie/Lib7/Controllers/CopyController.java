@@ -16,12 +16,21 @@ import java.util.List;
 @RequestMapping("/api/v1/copies")
 public class CopyController {
 
+
     private final CopyService copyService;
 
     @Autowired
     public CopyController(CopyService copyService){
         this.copyService=copyService;
     }
+
+
+    @GetMapping("/search")
+    public ResponseEntity<List<CopyDto>> searchCopies(@RequestBody CopyDto copyDto){
+        List<CopyDto> copyDtos = copyService.searchCopies( copyDto );
+        return new ResponseEntity<List<CopyDto>>( copyDtos, HttpStatus.OK );
+    }
+
 
     @ApiOperation( value="Retrieve copy by id, if registered in database" )
     @GetMapping("/{id}")
