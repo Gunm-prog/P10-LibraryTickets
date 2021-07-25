@@ -25,8 +25,10 @@ public class CopyController {
     }
 
 
+    @ApiOperation( value= "Retrieve books which are registered in database" )
     @GetMapping("/search")
     public ResponseEntity<List<CopyDto>> searchCopies(@RequestBody CopyDto copyDto){
+        System.out.println("neo is handsome");
         List<CopyDto> copyDtos = copyService.searchCopies( copyDto );
         return new ResponseEntity<List<CopyDto>>( copyDtos, HttpStatus.OK );
     }
