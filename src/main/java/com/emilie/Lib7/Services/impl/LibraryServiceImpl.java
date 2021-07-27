@@ -5,8 +5,7 @@ package com.emilie.Lib7.Services.impl;
 import com.emilie.Lib7.Exceptions.LibraryAlreadyExistException;
 import com.emilie.Lib7.Exceptions.LibraryNotFoundException;
 import com.emilie.Lib7.Models.Dtos.*;
-import com.emilie.Lib7.Models.Entities.Copy;
-import com.emilie.Lib7.Models.Entities.Library;
+import com.emilie.Lib7.Models.Entities.*;
 import com.emilie.Lib7.Repositories.BookRepository;
 import com.emilie.Lib7.Repositories.CopyRepository;
 import com.emilie.Lib7.Repositories.LibraryRepository;
@@ -143,6 +142,9 @@ public class LibraryServiceImpl implements LibraryService {
             }
             libraryDto.setCopyDtos( copyDtos );
         }
+
+        libraryDto.setAddressDto( makeAddressDto( library.getAddress() ) );
+
         return libraryDto;
 
     }
@@ -154,7 +156,7 @@ public class LibraryServiceImpl implements LibraryService {
         library.setPhoneNumber( libraryDto.getPhoneNumber() );
 
 
-        //TODO Continuer méthode de conversion comme au-dessus
+
         Set<Copy> copies=new HashSet<>();
         if (libraryDto.getCopyDtos() != null) {
             for (CopyDto copyDto : libraryDto.getCopyDtos()) {
@@ -162,11 +164,53 @@ public class LibraryServiceImpl implements LibraryService {
                 copy.setId( copyDto.getId() );
                 copy.setAvailable( copyDto.isAvailable() );
                 copies.add( copy );
+
+                    Book book = new Book();
+                    book.setBookId( copyDto.getBookDto().getBookId() );
+                    book.setTitle( copyDto.getBookDto().getTitle() );
+                    book.setIsbn(copyDto.getBookDto().getIsbn());
+                    book.setSummary( copyDto.getBookDto().getSummary() );
+
+                        Author author = new Author();
+                        author.setAuthorId( copyDto.getBookDto().getAuthorDto().getAuthorId());
+                        author.setLastName( copyDto.getBookDto().getAuthorDto().getLastName() );
+                        author.setFirstName( copyDto.getBookDto().getAuthorDto().getFirstName() );
+
+                    book.setAuthor(author);
+
+
+                copy.setBook(book);
+
+
+                copies.add( copy );
+
             }
             library.setCopies( copies );
         }
+
+        library.setAddress( makeAddress( libraryDto.getAddressDto() ) );
+
         return library;
 
+    }
+
+
+    private AddressDto makeAddressDto(Address address){
+        AddressDto addressDto = new AddressDto();
+        addressDto.setNumber( address.getNumber() );
+        addressDto.setStreet( address.getStreet() );
+        addressDto.setZipCode( address.getZipCode() );
+        addressDto.setCity( address.getCity() );
+        return addressDto;
+    }
+
+    private Address makeAddress(AddressDto addressDto){
+        Address address = new Address();
+        address.setNumber( addressDto.getNumber() );
+        address.setStreet( addressDto.getStreet());
+        address.setZipCode( addressDto.getZipCode() );
+        address.setCity( addressDto.getCity() );
+        return address;
     }
 
 }

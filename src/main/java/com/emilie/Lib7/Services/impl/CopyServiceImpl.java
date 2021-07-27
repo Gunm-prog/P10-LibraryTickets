@@ -40,13 +40,13 @@ public class CopyServiceImpl implements CopyService {
     }
 
     @Override
-    public List<CopyDto> searchCopies(CopyDto copyDto) {
-        String firstname = copyDto.getBookDto().getAuthorDto().getFirstName();
+    public List<CopyDto> searchCopies(String title, String isbn, String firstName, String lastName) {
+        /*String firstname = copyDto.getBookDto().getAuthorDto().getFirstName();
         String lastname = copyDto.getBookDto().getAuthorDto().getLastName();
         String title = copyDto.getBookDto().getTitle();
-        String isbn = copyDto.getBookDto().getIsbn();
+        String isbn = copyDto.getBookDto().getIsbn();*/
 
-        List<Copy> copies = copyRepository.searchCopies( firstname, lastname, title, isbn );
+        List<Copy> copies = copyRepository.searchCopies( firstName, lastName, title, isbn );
         List<CopyDto> copyDtos = new ArrayList<>();
 
         if (!copies.isEmpty()) {
