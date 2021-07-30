@@ -62,4 +62,17 @@ public class LoanController {
         return new ResponseEntity<LoanDto>(loanDto1, HttpStatus.OK  );
     }
 
+    @ApiOperation( value="Retrieve delayed loan list from database" )
+    @GetMapping("/delayList")
+    public ResponseEntity<List<LoanDto>> getDelayedLoans(){
+        return new ResponseEntity<List<LoanDto>>(loanService.findDelay(), HttpStatus.OK);
+    }
+
+    @ApiOperation( value="Delete a loan from database and make the copy available" )
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?>deleteLoan(@PathVariable(value="id") Long id){
+        loanService.deleteById( id );
+        return new ResponseEntity(HttpStatus.OK );
+    }
+
 }

@@ -3,7 +3,6 @@ package com.emilie.Lib7.Services.contract;
 import com.emilie.Lib7.Exceptions.LoanAlreadyExistsException;
 import com.emilie.Lib7.Exceptions.LoanNotFoundException;
 import com.emilie.Lib7.Models.Dtos.LoanDto;
-import com.emilie.Lib7.Models.Dtos.UserDto;
 
 import java.util.List;
 
@@ -18,9 +17,11 @@ public interface LoanService {
 
     LoanDto update(LoanDto loanDto);
 
-    boolean deleteById(Long id) throws  LoanNotFoundException;
+    void deleteById(Long id) throws  LoanNotFoundException;
 
     List<LoanDto> findAll();
 
     LoanDto extendLoan(LoanDto loanDto);
+
+    List<LoanDto> findDelay();
 }

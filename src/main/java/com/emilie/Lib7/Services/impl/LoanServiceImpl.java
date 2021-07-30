@@ -1,11 +1,8 @@
 package com.emilie.Lib7.Services.impl;
 
 import com.emilie.Lib7.Exceptions.*;
-import com.emilie.Lib7.Models.Dtos.LoanDto;
-import com.emilie.Lib7.Models.Dtos.UserDto;
-import com.emilie.Lib7.Models.Entities.Copy;
-import com.emilie.Lib7.Models.Entities.Loan;
-import com.emilie.Lib7.Models.Entities.User;
+import com.emilie.Lib7.Models.Dtos.*;
+import com.emilie.Lib7.Models.Entities.*;
 import com.emilie.Lib7.Repositories.CopyRepository;
 import com.emilie.Lib7.Repositories.LoanRepository;
 import com.emilie.Lib7.Repositories.UserRepository;
@@ -79,13 +76,18 @@ public class LoanServiceImpl implements LoanService {
             throw new LoanAlreadyExistsException( "loan already exists" );
         }
 
+        UserDto userDto = userToUserDto( optionalUser.get() );
+        loanDto.setUserDto( userDto );
+        CopyDto copyDto= makeCopyDto( optionalCopy.get() );
+        loanDto.setCopyDto( copyDto );
+
         Loan loan = loanDtoToLoan( loanDto );
-        loan.setUser( optionalUser.get() );
-        loan.setCopy( optionalCopy.get() );
         loan.setLoanStartDate(makePeriodDate( 0, null ));
         loan.setLoanEndDate( makePeriodDate( 30, null ) );
         loan.setExtended( false );
         loan = loanRepository.save( loan );
+        loan.getCopy().setAvailable( false );
+        copyRepository.save( loan.getCopy() );
         return loanToLoanDto( loan );
     }
 
@@ -152,17 +154,27 @@ public class LoanServiceImpl implements LoanService {
 
 
     @Override
-    public boolean deleteById(Long id) throws LoanNotFoundException {
+    public List<LoanDto> findDelay(){
+        List<Loan> loans = loanRepository.searchDelay();
+        List<LoanDto> loanDtos=new ArrayList<>();
+        for (Loan loan : loans) {
+            LoanDto loanDto=loanToLoanDto( loan );
+            loanDtos.add( loanDto );
+        }
+        return loanDtos;
+    }
+
+
+    @Override
+    public void deleteById(Long id) throws LoanNotFoundException {
         Optional<Loan> optionalLoan = loanRepository.findById( id );
         if (!optionalLoan.isPresent()){
             throw new LoanNotFoundException( "loan not found" );
         }
-        try {
             loanRepository.deleteById( id );
-        } catch (Exception e){
-            return false;
-        }
-        return true;
+            Loan loan = optionalLoan.get();
+            loan.getCopy().setAvailable( true );
+            copyRepository.save(loan.getCopy() );
     }
 
 
@@ -186,8 +198,12 @@ public class LoanServiceImpl implements LoanService {
         userDto.setEmail( user.getEmail() );
         loanDto.setUserDto( userDto );
 
+        loanDto.setCopyDto( makeCopyDto( loan.getCopy() ) );
+
         return loanDto;
     }
+
+
 
     private Loan loanDtoToLoan(LoanDto loanDto){
         Loan loan = new Loan();
@@ -204,9 +220,130 @@ public class LoanServiceImpl implements LoanService {
         user.setEmail( loanDto.getUserDto().getEmail() );
         loan.setUser( user );
 
+        loan.setCopy(makeCopy(loanDto.getCopyDto() )  );
+
         return loan;
 
     }
+
+
+    private UserDto userToUserDto(User user){
+        UserDto userDto = new UserDto();
+        userDto.setUserId( user.getId() );
+        userDto.setUsername(user.getUsername()  );
+        userDto.setEmail( user.getEmail() );
+        userDto.setFirstName( user.getFirstName() );
+        userDto.setLastName( user.getLastName());
+        return userDto;
+    }
+
+
+    private User userDtoToUser(UserDto userDto){
+        User user = new User();
+        user.setId( userDto.getUserId() );
+        user.setUsername( userDto.getUsername() );
+        user.setEmail( userDto.getEmail() );
+        user.setFirstName( userDto.getFirstName() );
+        user.setLastName( userDto.getLastName() );
+        return user;
+    }
+
+
+    private CopyDto makeCopyDto(Copy copy){
+        CopyDto copyDto = new CopyDto();
+        copyDto.setId( copy.getId() );
+        copyDto.setAvailable( copy.isAvailable() );
+        copyDto.setLibraryDto( makeLibraryDto( copy.getLibrary() ) );
+        copyDto.setBookDto( makeBookDto(copy.getBook()) );
+        return copyDto;
+    }
+
+    private Copy makeCopy(CopyDto copyDto){
+        Copy copy = new Copy();
+        copy.setId( copyDto.getId());
+        copy.setAvailable( copyDto.isAvailable() );
+        copy.setLibrary(makeLibrary( copyDto.getLibraryDto() ) );
+        copy.setBook( makeBook(copyDto.getBookDto()) );
+        return copy;
+    }
+
+
+    private BookDto makeBookDto(Book book){
+
+        BookDto bookDto = new BookDto();
+        bookDto.setBookId( book.getBookId() );
+        bookDto.setTitle( book.getTitle() );
+        bookDto.setIsbn( book.getIsbn() );
+        bookDto.setSummary( book.getSummary() );
+        bookDto.setAuthorDto( makeAuthorDto( book.getAuthor() ) );
+        return bookDto;
+    }
+
+    private Book makeBook(BookDto bookDto){
+        Book book = new Book();
+        book.setBookId(bookDto.getBookId() );
+        book.setTitle(bookDto.getTitle() );
+        book.setIsbn(bookDto.getIsbn());
+        book.setSummary(bookDto.getSummary());
+        book.setAuthor(makeAuthor( bookDto.getAuthorDto() ) );
+        return book;
+    }
+
+
+    private AuthorDto makeAuthorDto(Author author){
+        AuthorDto authorDto = new AuthorDto();
+        authorDto.setAuthorId( author.getAuthorId() );
+        authorDto.setFirstName( author.getFirstName());
+        authorDto.setLastName( author.getLastName() );
+        return authorDto;
+    }
+
+    private Author makeAuthor(AuthorDto authorDto){
+        Author author = new Author();
+        author.setAuthorId( authorDto.getAuthorId() );
+        author.setFirstName( authorDto.getFirstName() );
+        author.setLastName( authorDto.getLastName() );
+        return author;
+    }
+
+
+    private LibraryDto makeLibraryDto(Library library){
+        LibraryDto libraryDto = new LibraryDto();
+        libraryDto.setLibraryId( library.getLibraryId() );
+        libraryDto.setName( library.getName() );
+        libraryDto.setAddressDto( makeAddressDto( library.getAddress() ) );
+        library.setPhoneNumber( library.getPhoneNumber() );
+        return libraryDto;
+    }
+
+    private Library makeLibrary(LibraryDto libraryDto){
+        Library library = new Library();
+        library.setLibraryId( libraryDto.getLibraryId() );
+        library.setName( libraryDto.getName() );
+        library.setAddress( makeAddress( libraryDto.getAddressDto() ) );
+        library.setPhoneNumber( libraryDto.getPhoneNumber() );
+        return library;
+    }
+
+
+    private AddressDto makeAddressDto(Address address){
+        AddressDto addressDto = new AddressDto();
+        addressDto.setNumber( address.getNumber() );
+        addressDto.setStreet( address.getStreet() );
+        addressDto.setZipCode( address.getZipCode() );
+        addressDto.setCity( address.getCity() );
+        return addressDto;
+    }
+
+    private Address makeAddress(AddressDto addressDto){
+        Address address = new Address();
+        address.setNumber( addressDto.getNumber() );
+        address.setStreet( addressDto.getStreet());
+        address.setZipCode( addressDto.getZipCode() );
+        address.setCity( addressDto.getCity() );
+        return address;
+    }
+
 
     private Date makePeriodDate(int numberOfDays, Date initialEndDate){
 

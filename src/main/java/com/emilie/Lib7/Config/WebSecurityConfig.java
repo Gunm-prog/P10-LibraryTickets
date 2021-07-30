@@ -69,6 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/register/employee").hasAnyRole(JwtProperties.ROLE_ADMIN,JwtProperties.ROLE_EMPLOYEE)
                 /*.antMatchers("/edit/**").hasRole(JwtProperties.ROLE_TECHNICAL)*/
                 .antMatchers("/delete/**").hasAnyRole(JwtProperties.ROLE_ADMIN,JwtProperties.ROLE_EMPLOYEE)
+                .antMatchers("/api/v1/loans/delete/{id}").hasAnyRole( JwtProperties.ROLE_ADMIN, JwtProperties.ROLE_EMPLOYEE )
 
 
 

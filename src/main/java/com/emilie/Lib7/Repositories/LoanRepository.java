@@ -1,6 +1,5 @@
 package com.emilie.Lib7.Repositories;
 
-import com.emilie.Lib7.Models.Dtos.LoanDto;
 import com.emilie.Lib7.Models.Entities.Loan;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -29,5 +28,8 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
             "WHERE l.user.id = :userId")
 
     List<Loan> findLoansByUserId(@Param("userId") Long userId);
+
+    @Query(value = "SELECT loan FROM Loan loan WHERE DATEDIFF(DATE(NOW()), loan.loanEndDate) >= 0")
+    List<Loan> searchDelay();
 
 }

@@ -83,9 +83,16 @@ public class CopyServiceImpl implements CopyService {
         if (!optionalLibrary.isPresent()){
             throw new LibraryNotFoundException( "library not found" );
         }
+        BookDto bookDto = makeBookDto( optionalBook.get());
+        copyDto.setBookDto(bookDto);
+
+        LibraryDto libDto = makeLibraryDto(optionalLibrary.get());
+        copyDto.setLibraryDto(libDto);
+
         Copy copy=copyDtoToCopy( copyDto );
-        copy.setBook(optionalBook.get());
-        copy.setLibrary( optionalLibrary.get() );
+        // copy.setBook(optionalBook.get());
+        // copy.setLibrary( optionalLibrary.get() );
+        copy.setAvailable( true );
         copy=copyRepository.save( copy );
         return copyToCopyDto( copy );
     }
