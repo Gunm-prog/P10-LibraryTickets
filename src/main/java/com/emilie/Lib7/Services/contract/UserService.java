@@ -18,8 +18,6 @@ public interface UserService {
 
     void isNewUserValid(UserDto userDto);
 
-    UserDto findByUsername(String username);
-
     UserDto findByLastName(String lastName) throws UserNotFoundException;
 
 

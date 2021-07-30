@@ -15,7 +15,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
      Optional<User> findByLastName(String lastName);
 
-    Optional<User> findByUsername(String username);
 
     /*org.springframework.security.core.userdetails.User findByUsername(String username);*/
 

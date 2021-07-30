@@ -22,10 +22,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 
     @Override
-    public UserPrincipal loadUserByUsername(String username) {
-        Optional<User> userJwt= userRepository.findByUsername(username);
+    public UserPrincipal loadUserByUsername(String email) {
+        Optional<User> userJwt= userRepository.findByEmail(email);
         if (userJwt.isEmpty()) {
-            throw new UsernameNotFoundException("No user found for "+ username + ".");
+            throw new UsernameNotFoundException("No user found for "+ email + ".");
         }
         return new UserPrincipal( userJwt.get() );
     }

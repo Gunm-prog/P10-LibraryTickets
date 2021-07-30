@@ -151,7 +151,7 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
-    @Override
+   /* @Override
     public UserDto findByUsername(String username) throws UserNotFoundException {
         Optional<User> optionalUser = userRepository.findByUsername( username );
         if(!optionalUser.isPresent()){
@@ -159,7 +159,7 @@ public class UserServiceImpl implements UserService {
         }
         User user = optionalUser.get();
         return this.userToUserDto( user );
-    }
+    }*/
 
 
 
@@ -201,7 +201,6 @@ public class UserServiceImpl implements UserService {
     private UserDto userToUserDto(User user) {
         UserDto userDto=new UserDto();
         userDto.setUserId( user.getId() );
-        userDto.setUsername( user.getUsername() );
         userDto.setPassword(user.getPassword());
         userDto.setRoles( user.getRoles() );
         userDto.setActive( user.isActive() );
@@ -234,7 +233,6 @@ public class UserServiceImpl implements UserService {
     private User userDtoToUser(UserDto userDto) {
         User user=new User();
         user.setId( userDto.getUserId() );
-        user.setUsername( userDto.getUsername() );
         user.setPassword( userDto.getPassword() );
         user.setEmail( userDto.getEmail() );
         user.setRoles( userDto.getRoles() );

@@ -29,8 +29,8 @@ public class User implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "username", unique=true, nullable = false)
-    private String username;
+    /*@Column(name = "username", unique=true, nullable = false)*/
+    /*private String username;*/
 
     @Column(name = "password", nullable = false)
     private String password;
@@ -59,6 +59,10 @@ public class User implements Serializable {
     @Embedded
     private Address address;
 
+
+    public String getUsername(){
+        return email;
+    }
 
     public List<String> getRolesList() {
         if (this.roles.length() > 0) {
