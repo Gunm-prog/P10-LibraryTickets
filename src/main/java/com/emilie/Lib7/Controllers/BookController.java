@@ -34,12 +34,7 @@ public class BookController {
 
     }
 
-    @ApiOperation( value="List books from a library" )
-    @GetMapping("/library/{id}")
-    public ResponseEntity<List<BookDto>> findBooksByLibraryId(@PathVariable(value="id") Long libraryId){
-        List<BookDto> bookDtos =bookService.findBooksByLibraryId( libraryId );
-        return new ResponseEntity<List<BookDto>>(bookDtos, HttpStatus.OK  );
-    }
+
 
     @ApiOperation( value="Retrieve a book by id, if registered in database" )
     @GetMapping("/{id}")
@@ -47,6 +42,20 @@ public class BookController {
         BookDto bookDto = bookService.findById( id );
         return new ResponseEntity<BookDto>( bookDto, HttpStatus.OK );
     }
+
+    @ApiOperation( value= "Retrieve books which are registered in database" )
+    @GetMapping("/search")
+    public ResponseEntity<List<BookDto>> searchBooks(@RequestParam(value="libraryId", required=false) Long libraryId,
+                                                      @RequestParam(value = "title", required = false) String title,
+                                                      @RequestParam(value="isbn", required=false) String isbn,
+                                                      @RequestParam(value="firstName", required=false) String firstName,
+                                                      @RequestParam(value="lastName", required=false) String lastName){
+
+        List<BookDto> bookDtos = bookService.searchBooks(libraryId,title, isbn, firstName, lastName  );
+        System.out.println(bookDtos);
+        return new ResponseEntity<List<BookDto>>( bookDtos, HttpStatus.OK );
+    }
+
 
 
     @ApiOperation( value="Retrieve the booklist which is registered in database" )

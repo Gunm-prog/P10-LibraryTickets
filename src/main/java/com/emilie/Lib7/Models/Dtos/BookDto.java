@@ -1,13 +1,12 @@
 package com.emilie.Lib7.Models.Dtos;
 
 
-import com.emilie.Lib7.Models.Entities.Author;
-import com.emilie.Lib7.Models.Entities.Copy;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Data
@@ -21,7 +20,8 @@ public class BookDto implements Serializable/*, List<BookDto> */{
     private String isbn;
     private String summary;
     private AuthorDto authorDto;
-    private Set<CopyDto> copyDtos;
+    private Set<CopyDto> copyDtos = new HashSet<>(); //instancie le tableau vide
+
 
    /* @Override
     public int size() {

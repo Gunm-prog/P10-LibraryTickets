@@ -31,6 +31,8 @@ public interface BookService {
 
     List<BookDto> findAll();
 
-    List<BookDto> findBooksByLibraryId(Long id);
+    List<BookDto> searchBooks( Long libraryId, String title, String isbn, String firstName, String lastName);
+
+   /* List<BookDto> findBooksByLibraryId(Long id);*/
 
 }

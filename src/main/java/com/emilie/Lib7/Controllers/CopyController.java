@@ -33,12 +33,13 @@ public class CopyController {
 
     @ApiOperation( value= "Retrieve books which are registered in database" )
     @GetMapping("/search")
-    public ResponseEntity<List<CopyDto>> searchCopies(@RequestParam(value = "title", required = false) String title,
+    public ResponseEntity<List<CopyDto>> searchCopies(@RequestParam(value="libraryId", required=false) Long libraryId,
+                                                      @RequestParam(value = "title", required = false) String title,
                                                       @RequestParam(value="isbn", required=false) String isbn,
                                                       @RequestParam(value="firstName", required=false) String firstName,
                                                       @RequestParam(value="lastName", required=false) String lastName){
-        System.out.println("neo");
-        List<CopyDto> copyDtos = copyService.searchCopies(title, isbn, firstName, lastName  );
+
+        List<CopyDto> copyDtos = copyService.searchCopies(libraryId,title, isbn, firstName, lastName  );
         return new ResponseEntity<List<CopyDto>>( copyDtos, HttpStatus.OK );
     }
 

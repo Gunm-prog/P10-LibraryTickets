@@ -40,13 +40,14 @@ public class CopyServiceImpl implements CopyService {
     }
 
     @Override
-    public List<CopyDto> searchCopies(String title, String isbn, String firstName, String lastName) {
-        /*String firstname = copyDto.getBookDto().getAuthorDto().getFirstName();
-        String lastname = copyDto.getBookDto().getAuthorDto().getLastName();
-        String title = copyDto.getBookDto().getTitle();
-        String isbn = copyDto.getBookDto().getIsbn();*/
+    public List<CopyDto> searchCopies( Long libraryId, String title, String isbn, String firstName, String lastName) {
 
-        List<Copy> copies = copyRepository.searchCopies( firstName, lastName, title, isbn );
+        List<Copy> copies = new ArrayList<>();
+        if(libraryId != null){
+            copies = copyRepository.searchCopiesByLibrary(libraryId, firstName, lastName, title, isbn );
+        }else{
+             copies = copyRepository.searchCopies( firstName, lastName, title, isbn );
+        }
         List<CopyDto> copyDtos = new ArrayList<>();
 
         if (!copies.isEmpty()) {
@@ -239,6 +240,8 @@ public class CopyServiceImpl implements CopyService {
         return address;
     }
 
+
+
     private Book extractBookFromCopyDto(CopyDto copyDto){
         Book book = new Book();
         book.setBookId(copyDto.getBookDto().getBookId() );
@@ -248,6 +251,49 @@ public class CopyServiceImpl implements CopyService {
 
         return book;
     }
+
+    /*//retourne list livres contenant chacune de ses copies correspondantes à partir d'une liste de copies
+    private List<BookDto> makeBookSearchResult(List<Copy> copies){
+        List<BookDto> bookList = new ArrayList<>();
+        for(Copy copy : copies){
+            boolean isAlreadyListed = false;
+            int bookKey = 0;
+            for (int i = 0; i < bookList.size(); i++){
+                if (bookList.get( i ).getBookId().equals( copy.getBook().getBookId() )){
+                    isAlreadyListed = true; //évite les doublons
+                }
+            }
+            if (!isAlreadyListed){
+                BookDto bookDto = new BookDto();
+                bookDto.setBookId(copy.getBook().getBookId());
+                bookDto.setIsbn( copy.getBook().getIsbn() );
+                bookDto.setTitle( copy.getBook().getTitle() );
+                bookDto.setSummary( copy.getBook().getSummary() );
+
+                    AuthorDto authorDto = new AuthorDto();
+                    authorDto.setAuthorId( copy.getBook().getAuthor().getAuthorId() );
+                    authorDto.setFirstName( copy.getBook().getAuthor().getFirstName() );
+                    authorDto.setLastName( copy.getBook().getAuthor().getLastName() );
+
+                    bookDto.setAuthorDto( authorDto );
+                    bookList.add(bookDto);
+            }
+
+            CopyDto copyDto = new CopyDto();
+            copyDto.setAvailable(copy.isAvailable());
+            copyDto.setId(copy.getId());
+
+                LibraryDto libraryDto = new LibraryDto();
+                libraryDto.setLibraryId( copy.getLibrary().getLibraryId() );
+                libraryDto.setName( copy.getLibrary().getName() );
+
+                    copyDto.setLibraryDto( libraryDto );
+                    bookList.get( bookKey ).getCopyDtos().add( copyDto );
+
+        }
+
+        return bookList;
+    }*/
 
 
 

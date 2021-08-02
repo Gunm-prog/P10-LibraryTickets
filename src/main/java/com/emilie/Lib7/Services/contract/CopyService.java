@@ -18,7 +18,7 @@ public interface CopyService  {
 
     List<CopyDto> findAll();
 
-    List<CopyDto> searchCopies(String title, String isbn, String firstName, String lastName);
+    List<CopyDto> searchCopies(Long libraryId, String title, String isbn, String firstName, String lastName);
 
 
 }

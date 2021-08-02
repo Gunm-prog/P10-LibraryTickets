@@ -42,6 +42,36 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public List<BookDto> searchBooks( Long libraryId, String title, String isbn, String firstName, String lastName) {
+
+        List<Book> books = new ArrayList<>();
+        if(libraryId != null){
+            books = bookRepository.searchBooksByLibrary(libraryId, title,  isbn, firstName, lastName );
+        }else{
+            books = bookRepository.searchBooks(title, isbn, firstName, lastName   );
+        }
+        List<BookDto> bookDtos=new ArrayList<>();
+        for (Book book : books) {
+            BookDto bookDto =  bookToBookDto( book );
+
+            if(libraryId != null){ //filtre copy by libId si libId n'est pas nul
+                Set<CopyDto> copyDtosList=new HashSet<>();
+                if (bookDto.getCopyDtos() != null) {
+                    for (CopyDto copyDto : bookDto.getCopyDtos()) {
+                        if(copyDto.getLibraryDto().getLibraryId().equals(libraryId)){
+                            copyDtosList.add(copyDto);
+                        }
+                    }
+                    bookDto.setCopyDtos( copyDtosList );
+                }
+            }
+
+            bookDtos.add(bookDto);
+        }
+        return bookDtos;
+    }
+
+   /* @Override
     public List<BookDto> findBooksByLibraryId(Long id) {
         List<Book> books= bookRepository.findBooksByLibraryId( id );
         List<BookDto> bookDtos = new ArrayList<>();
@@ -50,7 +80,7 @@ public class BookServiceImpl implements BookService {
             bookDtos.add(bookDto);
         }
         return bookDtos;
-    }
+    }*/
 
     @Override
     public BookDto findById(Long id) throws BookNotFoundException {
