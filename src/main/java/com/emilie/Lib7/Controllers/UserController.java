@@ -58,9 +58,9 @@ public class UserController {
     }*/
 
     @ApiOperation( value="update user saving modifications in database" )
-    @PutMapping("/{id}")
+    @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<UserDto> updateUser(@PathVariable(value="id") Long id, @RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
         UserDto userDto1 = userService.update( userDto );
         return new ResponseEntity<UserDto>( userDto1, HttpStatus.OK );
     }

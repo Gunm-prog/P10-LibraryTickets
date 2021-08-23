@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserDto update(UserDto userDto) {
+    public UserDto update(UserDto userDto)  throws UserNotFoundException {
         Optional<User> optionalUser=userRepository.findById( userDto.getUserId() );
         if (userDto.getAddressDto() == null){
             throw new AddressNotFoundException( "Address not found" );
@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
         user.setFirstName( userDto.getFirstName() );
         user.setLastName( userDto.getLastName() );
         user.setAddress(makeAddress(userDto.getAddressDto() ));
-        System.out.println(user);
+
         user=userRepository.save( user );
         return userToUserDto( user );
     }

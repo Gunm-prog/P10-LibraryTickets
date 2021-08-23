@@ -27,7 +27,7 @@ public interface UserService {
 
     boolean deleteById(Long id) throws UserNotFoundException;
 
-    UserDto update(UserDto userDto);
+    UserDto update(UserDto userDto)  throws UserNotFoundException;
 
 
 }
