@@ -14,7 +14,7 @@ public interface CopyService  {
 
     CopyDto update(CopyDto copyDto);
 
-    boolean deleteById(Long id) throws  CopyNotFoundException;
+    void deleteById(Long id) throws  CopyNotFoundException;
 
     List<CopyDto> findAll();
 

@@ -21,7 +21,9 @@ public interface LoanService {
 
     List<LoanDto> findAll();
 
-    LoanDto extendLoan(LoanDto loanDto);
+    LoanDto extendLoan(Long loanId);
 
     List<LoanDto> findDelay();
+
+    LoanDto returnLoan(Long loanId) throws  LoanNotFoundException;
 }

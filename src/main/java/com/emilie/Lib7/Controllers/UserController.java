@@ -1,10 +1,15 @@
 package com.emilie.Lib7.Controllers;
 
 
+import com.emilie.Lib7.Config.JwtTokenUtil;
+import com.emilie.Lib7.Exceptions.ImpossibleDeleteUserException;
 import com.emilie.Lib7.Exceptions.UserNotFoundException;
 import com.emilie.Lib7.Models.Dtos.UserDto;
+import com.emilie.Lib7.Models.Entities.UserPrincipal;
 import com.emilie.Lib7.Services.contract.UserService;
+import com.emilie.Lib7.Services.impl.UserDetailsServiceImpl;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,90 +20,139 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
+@Slf4j
 public class UserController {
 
     private final UserService userService;
 
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
+
+    private final JwtTokenUtil jwtTokenUtil;
 
 
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserDetailsServiceImpl userDetailsServiceImpl, JwtTokenUtil jwtTokenUtil) {
         this.userService=userService;
+        this.userDetailsServiceImpl=userDetailsServiceImpl;
+        this.jwtTokenUtil = jwtTokenUtil;
 
     }
 
     @ApiOperation(value="Retrieve a user account thanks to its Id, if the user is registered in database")
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> findById(@PathVariable(value="id") Long id) throws UserNotFoundException {
-       UserDto userDto = userService.findById( id );
-       return new ResponseEntity<UserDto>(userDto, HttpStatus.OK  );
+    public ResponseEntity<?> findById(@PathVariable(value="id") Long id) throws UserNotFoundException {
+        try {
+            UserDto userDto = userService.findById(id);
+            userDto.setPassword( "" );//todo ajout recent si debud needed
+            return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
+        }catch(UserNotFoundException e){
+            log.error(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }catch(Exception e){
+            log.warn(e.getMessage(),e);
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("INTERNAL_SERVER_ERROR");
+        }
     }
 
     @ApiOperation( "retrieve a user with token and id, if the user is registered in database" )
     @GetMapping("/userAccount")
-    public ResponseEntity<UserDto> getLoggedUser() throws UserNotFoundException{
-        UserDto userDto = userService.getLoggedUser();
-        userDto.setPassword( "" );
-        return new ResponseEntity<UserDto>(userDto, HttpStatus.OK );
+    public ResponseEntity<?> getLoggedUser() throws UserNotFoundException{
+        try {
+            UserDto userDto = userService.getLoggedUser();
+            userDto.setPassword( "" );
+            return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
+        }catch(UserNotFoundException e){
+            log.error(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }catch(Exception e){
+            log.warn(e.getMessage(),e);
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("INTERNAL_SERVER_ERROR");
+        }
     }
 
     @ApiOperation(value="Retrieve user list from the database")
     @GetMapping("/userList")
-    public ResponseEntity<List<UserDto>> findAll() {
-        List<UserDto> userDtos = userService.findAll();
-        return new ResponseEntity<List<UserDto>>(userDtos, HttpStatus.OK  );
+    public ResponseEntity<?> findAll() {
+        try{
+            List<UserDto> userDtos = userService.findAll();
+            return new ResponseEntity<List<UserDto>>(userDtos, HttpStatus.OK  );
+        }catch(Exception e){
+            log.warn(e.getMessage(),e);
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("INTERNAL_SERVER_ERROR");
+        }
     }
 
-    /*@ApiOperation( value="Create an account saved in database containing the informations given by user" )
-    @PostMapping("/createUserAccount")
-    public ResponseEntity<String> save(@RequestBody UserDto userDto) throws UserAlreadyExistException {
-        userService.save( userDto );
-        return ResponseEntity.status( HttpStatus.CREATED ).build();
-    }*/
-
-    @ApiOperation( value="update user saving modifications in database" )
+    @ApiOperation( value="update user saving modifications in database and return a newJwtToken" )
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
-        UserDto userDto1 = userService.update( userDto );
-        return new ResponseEntity<UserDto>( userDto1, HttpStatus.OK );
-    }
+    public ResponseEntity<String> updateUser(@RequestBody UserDto userDto)
+            throws UserNotFoundException
+    {
+        try{
+            UserDto userDto1 = userService.update( userDto );
+            UserPrincipal userPrincipal = userDetailsServiceImpl.loadUserByUsername(userDto1.getEmail());
 
-    /*@ApiOperation( value="update user saving modifications in database" )
-    @PutMapping("/{id}")
-    public ResponseEntity<UserDto> update( @PathVariable(value="id") Long id, @RequestBody UserDto userDto
-                                         *//* ,RequestHeader requestHeader*//*) {
-        *//*jwtTokenUtil.isCurrentUser( requestHeader, id );*//*
-        UserDto userDto1=userService.update( userDto );
-        return new ResponseEntity<UserDto>( userDto1, HttpStatus.OK );
-    }*/
-
-
-    @ApiOperation( value="delete user from database by id" )
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable(value="id") Long id) throws UserNotFoundException {
-        if (userService.deleteById( id )) {
-            return ResponseEntity.status( HttpStatus.OK ).build();
-        } else {
-            return ResponseEntity.status( 500 ).build();
+            return new ResponseEntity<String>(jwtTokenUtil.generateToken( userPrincipal ),HttpStatus.OK);
+        }catch(UserNotFoundException e){
+            log.error(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }catch(Exception e){
+            log.warn(e.getMessage(),e);
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("INTERNAL_SERVER_ERROR");
         }
 
     }
 
-    //TODO ResponseEntity
-    @ApiOperation(value="Retrieve a user account thanks to its last name, if the user is registered in database")
-    @GetMapping("/last-name/{last-name}")
-    public UserDto getByLastName(@PathVariable(value="last-name") String lastName) throws UserNotFoundException {
-        /*userDto.setLastName( lastName );*/
-        return this.userService.findByLastName( lastName );
+    @ApiOperation( value="delete user from database by id" )
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable(value="id") Long id)
+            throws UserNotFoundException, ImpossibleDeleteUserException
+    {
+        try {
+            userService.deleteById( id );
+            log.info("user " + id + " has been deleted");
+            return new ResponseEntity<>("user " + id + " has been deleted", HttpStatus.OK );
+        }catch(UserNotFoundException e){
+            log.error(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }catch(ImpossibleDeleteUserException e){
+            log.info(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(e.getMessage());
+        }catch(Exception e){
+            log.warn(e.getMessage(),e);
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("INTERNAL_SERVER_ERROR");
+        }
+        /*if (userService.deleteById( id )) {
+            return new ResponseEntity<>(HttpStatus.OK );
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST );
+        }*/
+
     }
 
-    @ApiOperation(value="Retrieve a user account thanks to its email, if the user is registered in database")
-    @GetMapping("/email/{email}")
-    public UserDto getByEmail(@PathVariable String email) throws UserNotFoundException {
-        return this.userService.findByEmail( email );
-    }
+
+
 
 
 }

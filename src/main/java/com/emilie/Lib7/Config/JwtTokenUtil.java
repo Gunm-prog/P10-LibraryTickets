@@ -139,6 +139,8 @@ public class JwtTokenUtil implements Serializable {
         return JWT.create()
                 .withClaim("role",userPrincipal.getAuthorities().toString())
                 .withClaim("userId",userPrincipal.getUserId())
+                .withClaim("lastname", userPrincipal.getLastname())
+                .withClaim("firstname", userPrincipal.getFirstname())
                 .withSubject(userPrincipal.getUsername())
                 .withIssuedAt(new Date( System.currentTimeMillis() ))
                 .withExpiresAt(new Date( System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000 ))

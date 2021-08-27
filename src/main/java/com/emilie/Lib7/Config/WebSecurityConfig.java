@@ -62,14 +62,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/api/v1/libraries/{id}").permitAll()
                 .and()
                 .authorizeRequests().antMatchers("/api/v1/books/{id}").permitAll()
-                .and()
-                /*.authorizeRequests().antMatchers("/api/v1/users/createUserAccount").permitAll()
-                .and()*/
-                .authorizeRequests().antMatchers("/users/test").permitAll()
+                /*.and()*/
+                /*.authorizeRequests().antMatchers("/api/v1/users/createUserAccount").permitAll()*/
                 .antMatchers("/register/employee").hasAnyRole(JwtProperties.ROLE_ADMIN,JwtProperties.ROLE_EMPLOYEE)
                 /*.antMatchers("/edit/**").hasRole(JwtProperties.ROLE_TECHNICAL)*/
-                .antMatchers("/delete/**").hasAnyRole(JwtProperties.ROLE_ADMIN,JwtProperties.ROLE_EMPLOYEE)
-                .antMatchers("/api/v1/loans/delete/{id}").hasAnyRole( JwtProperties.ROLE_ADMIN, JwtProperties.ROLE_EMPLOYEE )
+                .antMatchers("/api/v1/delete/**").hasAnyRole(JwtProperties.ROLE_ADMIN,JwtProperties.ROLE_EMPLOYEE)
+                .antMatchers("/api/v1/loans/return/{id}").hasAnyRole( JwtProperties.ROLE_ADMIN, JwtProperties.ROLE_EMPLOYEE )
 
 
 

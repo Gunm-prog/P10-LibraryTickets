@@ -4,6 +4,7 @@ package com.emilie.Lib7.Services.impl;
 import com.emilie.Lib7.Exceptions.AuthorNotFoundException;
 import com.emilie.Lib7.Exceptions.BookAlreadyExistException;
 import com.emilie.Lib7.Exceptions.BookNotFoundException;
+import com.emilie.Lib7.Exceptions.ImpossibleDeleteBookException;
 import com.emilie.Lib7.Models.Dtos.*;
 import com.emilie.Lib7.Models.Entities.*;
 import com.emilie.Lib7.Repositories.AuthorsRepository;
@@ -12,7 +13,6 @@ import com.emilie.Lib7.Services.contract.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 @Service
@@ -86,7 +86,7 @@ public class BookServiceImpl implements BookService {
     public BookDto findById(Long id) throws BookNotFoundException {
         Optional<Book> optionalBook=bookRepository.findById( id );
         if (!optionalBook.isPresent()) {
-            throw new BookNotFoundException( "Book not found" );
+            throw new BookNotFoundException( "Book " + id + " not found" );
         }
         Book book=optionalBook.get();
         return bookToBookDto( book );
@@ -97,14 +97,16 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto save(BookDto bookDto) throws BookAlreadyExistException {
+    public BookDto save(BookDto bookDto)
+            throws BookAlreadyExistException, AuthorNotFoundException
+    {
         Optional<Book> optionalBook=bookRepository.findByTitle( bookDto.getTitle() );
         if (optionalBook.isPresent()) {
-            throw new BookAlreadyExistException( "book already exists" );
+            throw new BookAlreadyExistException( "book " + bookDto.getTitle() + " already exists" );
         }
         Optional<Author> optionalAuthor=authorsRepository.findById( bookDto.getAuthorDto().getAuthorId() );
         if (!optionalAuthor.isPresent()) {
-            throw new AuthorNotFoundException( "author not found" );
+            throw new AuthorNotFoundException( "author " + bookDto.getAuthorDto().getAuthorId() + " not found" );
         }
         Book book=bookDtoToBook( bookDto );
         book.setAuthor( optionalAuthor.get() );
@@ -114,10 +116,12 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public BookDto update(BookDto bookDto) throws BookNotFoundException {
+    public BookDto update(BookDto bookDto)
+            throws BookNotFoundException
+    {
         Optional<Book> optionalBook=bookRepository.findById( bookDto.getBookId() );
         if (!optionalBook.isPresent()) {
-            throw new BookNotFoundException( "book not found" );
+            throw new BookNotFoundException( "book " + bookDto.getBookId() + " not found" );
         }
 
         Book book=optionalBook.get();
@@ -130,10 +134,14 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public boolean deleteById(Long id) throws BookNotFoundException {
+    public boolean deleteById(Long id)
+            throws BookNotFoundException, ImpossibleDeleteBookException
+    {
         Optional<Book> optionalBook=bookRepository.findById( id );
         if (!optionalBook.isPresent()) {
-            throw new BookNotFoundException( "book not found" );
+            throw new BookNotFoundException( "book " + id + " not found" );
+        }else if (optionalBook.get().getCopies().size() > 0 ){
+            throw new ImpossibleDeleteBookException("This book " + id + " have existing copy");
         }
         try {
             bookRepository.deleteById( id );
@@ -145,11 +153,11 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public BookDto findByTitle(String title) throws UnsupportedEncodingException {
+    public BookDto findByTitle(String title) throws BookNotFoundException/*, UnsupportedEncodingException*/ {
         /*title=URLDecoder.decode( title, StandardCharsets.UTF_8.toString() );*/
         Optional<Book> optionalBook=bookRepository.findByTitle( title );
         if (!optionalBook.isPresent()) {
-            throw new BookNotFoundException( "books not found" );
+            throw new BookNotFoundException( "books " + title + " not found" );
         }
         Book book=optionalBook.get();
         BookDto bookDto=this.bookToBookDto( book );
@@ -161,7 +169,7 @@ public class BookServiceImpl implements BookService {
     public BookDto findByAuthor(Author author) {
         Optional<Book> optionalBook=bookRepository.findByAuthor( author );
         if (!optionalBook.isPresent()) {
-            throw new BookNotFoundException( "book not found" );
+            throw new BookNotFoundException( "book for author " + author.getAuthorId() + " not found" );
         }
         Book book=optionalBook.get();
         return this.bookToBookDto( book );

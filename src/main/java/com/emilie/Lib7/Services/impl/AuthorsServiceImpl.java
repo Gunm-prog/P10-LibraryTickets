@@ -3,6 +3,7 @@ package com.emilie.Lib7.Services.impl;
 
 import com.emilie.Lib7.Exceptions.AuthorAlreadyExistException;
 import com.emilie.Lib7.Exceptions.AuthorNotFoundException;
+import com.emilie.Lib7.Exceptions.ImpossibleDeleteAuthorException;
 import com.emilie.Lib7.Models.Dtos.AuthorDto;
 import com.emilie.Lib7.Models.Dtos.BookDto;
 import com.emilie.Lib7.Models.Dtos.CopyDto;
@@ -32,7 +33,13 @@ public class AuthorsServiceImpl implements AuthorsService {
 
     @Override
     public List<AuthorDto> findAll() {
-        return null;
+        List<Author> authors=authorsRepository.findAll();
+        List<AuthorDto> authorDtos=new ArrayList<>();
+        for (Author author : authors) {
+            AuthorDto authorDto =  authorToAuthorDto( author );
+            authorDtos.add(authorDto);
+        }
+        return authorDtos;
     }
 
     @Override
@@ -48,7 +55,9 @@ public class AuthorsServiceImpl implements AuthorsService {
 
 
     @Override
-    public AuthorDto save(AuthorDto authorDto) throws AuthorAlreadyExistException {
+    public AuthorDto save(AuthorDto authorDto)
+            throws AuthorAlreadyExistException
+    {
         //Optional<Author> optionalAuthor=authorsRepository.findById( authorDto.getAuthorId() );
         Optional<Author> optionalAuthor=authorsRepository.findByName( authorDto.getFirstName() , authorDto.getLastName() );
         if (optionalAuthor.isPresent()) {
@@ -62,7 +71,9 @@ public class AuthorsServiceImpl implements AuthorsService {
 
 
     @Override
-    public AuthorDto update(AuthorDto authorDto) throws AuthorNotFoundException{
+    public AuthorDto update(AuthorDto authorDto)
+            throws AuthorNotFoundException
+    {
         Optional<Author> optionalAuthor=authorsRepository.findById( authorDto.getAuthorId() );
         if (!optionalAuthor.isPresent()){
             throw new AuthorNotFoundException( "author not found" );
@@ -75,10 +86,14 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
-    public boolean deleteById(Long id) throws AuthorNotFoundException {
+    public boolean deleteById(Long id)
+            throws AuthorNotFoundException, ImpossibleDeleteAuthorException
+    {
         Optional<Author> optionalAuthor=authorsRepository.findById( id );
         if (!optionalAuthor.isPresent()) {
             throw new AuthorNotFoundException( "author not found" );
+        }else if (optionalAuthor.get().getBooks().size() > 0){
+            throw new ImpossibleDeleteAuthorException("This author " + id + " have existing books");
         }
         try {
             authorsRepository.deleteById( id );

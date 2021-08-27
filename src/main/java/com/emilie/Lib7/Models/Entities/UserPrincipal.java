@@ -20,11 +20,11 @@ public class UserPrincipal implements UserDetails {
         this.user=user;
     }
 
-
-
-        public Long getUserId(){
+    public Long getUserId(){
             return this.user.getId();
         }
+    public String getLastname(){return this.user.getLastName();}
+    public String getFirstname(){return this.user.getFirstName();}
 
     /**
      * Returns the authorities granted to the user. Cannot return <code>null</code>.

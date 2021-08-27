@@ -2,6 +2,7 @@
 package com.emilie.Lib7.Services.impl;
 
 
+import com.emilie.Lib7.Exceptions.ImpossibleDeleteLibraryException;
 import com.emilie.Lib7.Exceptions.LibraryAlreadyExistException;
 import com.emilie.Lib7.Exceptions.LibraryNotFoundException;
 import com.emilie.Lib7.Models.Dtos.*;
@@ -81,10 +82,12 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
-    public boolean deleteById(Long id) throws LibraryNotFoundException {
+    public boolean deleteById(Long id) throws LibraryNotFoundException, ImpossibleDeleteLibraryException {
         Optional<Library> optionalLibrary=libraryRepository.findById( id );
         if (!optionalLibrary.isPresent()) {
             throw new LibraryNotFoundException( "library not found" );
+        }else if(optionalLibrary.get().getCopies().size() > 0 ){
+            throw new ImpossibleDeleteLibraryException("This library " + id + " have existing copies");
         }
         try {
             libraryRepository.deleteById( id );

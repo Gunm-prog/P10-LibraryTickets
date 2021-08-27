@@ -2,6 +2,7 @@ package com.emilie.Lib7.Services.impl;
 
 
 import com.emilie.Lib7.Exceptions.AddressNotFoundException;
+import com.emilie.Lib7.Exceptions.ImpossibleDeleteUserException;
 import com.emilie.Lib7.Exceptions.UserAlreadyExistException;
 import com.emilie.Lib7.Exceptions.UserNotFoundException;
 import com.emilie.Lib7.Models.Dtos.*;
@@ -10,12 +11,10 @@ import com.emilie.Lib7.Repositories.UserRepository;
 import com.emilie.Lib7.Services.contract.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 
 @Service
@@ -23,9 +22,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository=userRepository;
+        this.bCryptPasswordEncoder  = bCryptPasswordEncoder;
     }
 
 
@@ -52,7 +54,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto save(UserDto userDto) throws UserAlreadyExistException {
+    public UserDto save(UserDto userDto) throws UserAlreadyExistException, AddressNotFoundException {
         isNewUserValid( userDto );
 
         System.out.println(userDto);
@@ -86,14 +88,14 @@ public class UserServiceImpl implements UserService {
         }
 
         User user=optionalUser.get();
-        System.out.println("ligne 91 : " + user);
+
         //TODO username refresh token
-        /*user.setUsername( userDto.getUsername() );*/
+    //    if(userDto.getPassword() != null)user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword() ));
         //TODO Email refresh token
-        /*user.setEmail( userDto.getEmail() );*/
-        user.setFirstName( userDto.getFirstName() );
-        user.setLastName( userDto.getLastName() );
-        user.setAddress(makeAddress(userDto.getAddressDto() ));
+        if(userDto.getEmail() != null)user.setEmail( userDto.getEmail() );
+        if(userDto.getFirstName() != null) user.setFirstName( userDto.getFirstName() );
+        if(userDto.getLastName() != null)user.setLastName( userDto.getLastName() );
+        if(userDto.getAddressDto() != null)user.setAddress(makeAddress(userDto.getAddressDto() ));
 
         user=userRepository.save( user );
         return userToUserDto( user );
@@ -102,10 +104,14 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public boolean deleteById(Long id) throws UserNotFoundException {
+    public boolean deleteById(Long id)
+            throws UserNotFoundException, ImpossibleDeleteUserException
+    {
         Optional<User> optionalUser=userRepository.findById( id );
         if (!optionalUser.isPresent()) {
             throw new UserNotFoundException( "user not found" );
+        }else if(optionalUser.get().getLoans().size() > 0){
+            throw new ImpossibleDeleteUserException("This user " + id + " have existing loans");
         }
         try {
             userRepository.deleteById( id );
@@ -145,7 +151,6 @@ public class UserServiceImpl implements UserService {
         UserDto userDto=new UserDto();
         userDto.setLastName( user.getLastName() );
         userDto.setEmail( user.getEmail() );
-        userDto.setUsername( user.getUsername() );
         userDto.setFirstName( user.getFirstName() );
 
         return userDto;
@@ -168,7 +173,7 @@ public class UserServiceImpl implements UserService {
     public UserDto findByEmail(String email) throws UserNotFoundException {
         Optional<User> optionalUser=userRepository.findByEmail( email );
         if (!optionalUser.isPresent()) {
-            throw new UserNotFoundException( "User not found" );
+            throw new UserNotFoundException( "User " + email + " not found" );
         }
         User user=optionalUser.get();
         UserDto userDto=this.userToUserDto( user );
@@ -191,7 +196,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> findAll() {
-        return null;
+        List<User> users=userRepository.findAll();
+        List<UserDto> userDtos=new ArrayList<>();
+        for (User user : users) {
+            UserDto userDto= userToUserDto(user);
+            userDto.setPassword("");
+            userDtos.add(userDto);
+        }
+        return userDtos;
     }
 
     // Les méthodes ci-dessous sont en private, parce qu'elles ne sont pas destinées à être utilisées en dehors de la class UserServiceImpl.
@@ -284,6 +296,7 @@ public class UserServiceImpl implements UserService {
         loanDto.setLoanStartDate(loan.getLoanStartDate());
         loanDto.setLoanEndDate( loan.getLoanEndDate() );
         loanDto.setExtended( loan.isExtended() );
+        loanDto.setReturned( loan.isReturned());
         loanDto.setCopyDto( makeCopyDto( loan.getCopy() ) );
         return loanDto;
     }
@@ -295,6 +308,7 @@ public class UserServiceImpl implements UserService {
         loan.setLoanStartDate( loanDto.getLoanStartDate() );
         loan.setLoanEndDate( loanDto.getLoanEndDate() );
         loan.setExtended( loanDto.isExtended() );
+        loan.setReturned( loanDto.isReturned());
         loan.setCopy( makeCopy( loanDto.getCopyDto() ) );
         return loan;
     }

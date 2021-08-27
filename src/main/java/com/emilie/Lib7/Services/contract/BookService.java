@@ -7,7 +7,6 @@ import com.emilie.Lib7.Exceptions.BookNotFoundException;
 import com.emilie.Lib7.Models.Dtos.BookDto;
 import com.emilie.Lib7.Models.Entities.Author;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 
@@ -25,7 +24,7 @@ public interface BookService {
 
    boolean deleteById(Long id) throws BookNotFoundException;
 
-    BookDto findByTitle(String title) throws UnsupportedEncodingException;
+    BookDto findByTitle(String title) throws BookNotFoundException/*,UnsupportedEncodingException*/;
 
     BookDto findByAuthor(Author author);
 

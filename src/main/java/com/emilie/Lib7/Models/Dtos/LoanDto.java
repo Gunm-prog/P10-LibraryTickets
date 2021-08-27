@@ -2,7 +2,6 @@ package com.emilie.Lib7.Models.Dtos;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.joda.time.DateTime;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -17,6 +16,7 @@ public class LoanDto implements Serializable {
     private Date loanStartDate;
     private Date loanEndDate;
     private boolean Extended;
+    private boolean isReturned;
     private UserDto userDto;
     private CopyDto copyDto;
 

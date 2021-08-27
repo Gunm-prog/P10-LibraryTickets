@@ -39,7 +39,13 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public List<LoanDto> findAll() {
-        return null;
+        List<Loan> loans=loanRepository.findAll();
+        List<LoanDto> loanDtos=new ArrayList<>();
+        for (Loan loan : loans) {
+            LoanDto loanDto= loanToLoanDto(loan);
+            loanDtos.add(loanDto);
+        }
+        return loanDtos;
     }
 
 
@@ -55,25 +61,23 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public LoanDto save(LoanDto loanDto) throws
-            UserNotFoundException,
-            CopyNotFoundException,
-            LoanAlreadyExistsException{
-
+    public LoanDto save(LoanDto loanDto)
+            throws UserNotFoundException, CopyNotFoundException, LoanAlreadyExistsException
+    {
 
         Optional<User> optionalUser = userRepository.findById( loanDto.getUserDto().getUserId() );
         if (!optionalUser.isPresent()){
-            throw new UserNotFoundException( "user not found" );
+            throw new UserNotFoundException( "user " + loanDto.getUserDto().getUserId() + " not found" );
         }
 
         Optional<Copy> optionalCopy = copyRepository.findById( loanDto.getCopyDto().getId() );
         if (!optionalCopy.isPresent()){
-            throw new CopyNotFoundException( "copy not found" );
+            throw new CopyNotFoundException( "copy " + loanDto.getCopyDto().getId() + " not found" );
         }
 
         Optional<Loan> optionalLoan = loanRepository.findByCopyId(loanDto.getCopyDto().getId());
         if (optionalLoan.isPresent()){
-            throw new LoanAlreadyExistsException( "loan already exists" );
+            throw new LoanAlreadyExistsException( "loan for copy " + loanDto.getCopyDto().getId() + " already exists" );
         }
 
         UserDto userDto = userToUserDto( optionalUser.get() );
@@ -106,7 +110,6 @@ public class LoanServiceImpl implements LoanService {
         return loanDtos;
     }
 
-
     @Override
     public LoanDto update(LoanDto loanDto) throws LoanNotFoundException, UserNotFoundException, CopyNotFoundException {
         Optional<Loan> optionalLoan = loanRepository.findById( loanDto.getId());
@@ -132,15 +135,15 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public LoanDto extendLoan(LoanDto loanDto) throws LoanNotFoundException, ImpossibleExtendLoanException{
-        Optional<Loan> optionalLoan = loanRepository.findById( loanDto.getId() );
+    public LoanDto extendLoan(Long loanId) throws LoanNotFoundException, ImpossibleExtendLoanException{
+        Optional<Loan> optionalLoan = loanRepository.findById( loanId );
         if (!optionalLoan.isPresent()){
-            throw new LoanNotFoundException( "loan not found" );
+            throw new LoanNotFoundException( "loan " + loanId + " not found" );
         }
 
         Loan loan = optionalLoan.get();
         if (loan.isExtended()){
-            throw new ImpossibleExtendLoanException( "impossible extend of loan" );
+            throw new ImpossibleExtendLoanException( "this loan " + loanId + " has already been extended" );
         }
 
 
@@ -150,6 +153,19 @@ public class LoanServiceImpl implements LoanService {
 
         loan = loanRepository.save( loan );
         return loanToLoanDto( loan );
+    }
+
+    @Override
+    public LoanDto returnLoan(Long loanId) throws  LoanNotFoundException {
+        Optional<Loan> optionalLoan = loanRepository.findById( loanId );
+        if (!optionalLoan.isPresent()){
+            throw new LoanNotFoundException( "loan " + loanId + " not found" );
+        }
+        Loan loan = optionalLoan.get();
+        loan.setReturned(true);
+
+        loan = loanRepository.save(loan);
+        return loanToLoanDto(loan);
     }
 
 
@@ -166,10 +182,13 @@ public class LoanServiceImpl implements LoanService {
 
 
     @Override
-    public void deleteById(Long id) throws LoanNotFoundException {
+    public void deleteById(Long id)
+            throws LoanNotFoundException, ImpossibleDeleteLoanException {
         Optional<Loan> optionalLoan = loanRepository.findById( id );
         if (!optionalLoan.isPresent()){
-            throw new LoanNotFoundException( "loan not found" );
+            throw new LoanNotFoundException( "loan " + id + " not found" );
+        }else if(!optionalLoan.get().isReturned()){
+            throw new ImpossibleDeleteLoanException("copy of loan " + id + " have not been returned");
         }
             loanRepository.deleteById( id );
             Loan loan = optionalLoan.get();
@@ -188,13 +207,13 @@ public class LoanServiceImpl implements LoanService {
         loanDto.setLoanStartDate(loan.getLoanStartDate());
         loanDto.setLoanEndDate( loan.getLoanEndDate() );
         loanDto.setExtended( loan.isExtended() );
+        loanDto.setReturned( loan.isReturned());
 
         User user = loan.getUser();
         UserDto userDto = new UserDto();
         userDto.setUserId( user.getId() );
         userDto.setFirstName( user.getFirstName() );
         userDto.setLastName( user.getLastName() );
-        userDto.setUsername( user.getUsername() );
         userDto.setEmail( user.getEmail() );
         loanDto.setUserDto( userDto );
 
@@ -211,6 +230,7 @@ public class LoanServiceImpl implements LoanService {
         loan.setLoanStartDate( loanDto.getLoanStartDate() );
         loan.setLoanEndDate( loanDto.getLoanEndDate() );
         loan.setExtended( loanDto.isExtended() );
+        loan.setReturned( loanDto.isReturned());
 
         User user = new User();
         user.setId(loanDto.getUserDto().getUserId());
@@ -229,7 +249,6 @@ public class LoanServiceImpl implements LoanService {
     private UserDto userToUserDto(User user){
         UserDto userDto = new UserDto();
         userDto.setUserId( user.getId() );
-        userDto.setUsername(user.getUsername()  );
         userDto.setEmail( user.getEmail() );
         userDto.setFirstName( user.getFirstName() );
         userDto.setLastName( user.getLastName());

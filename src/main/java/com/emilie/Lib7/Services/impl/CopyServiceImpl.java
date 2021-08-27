@@ -1,8 +1,6 @@
 package com.emilie.Lib7.Services.impl;
 
-import com.emilie.Lib7.Exceptions.BookNotFoundException;
-import com.emilie.Lib7.Exceptions.CopyNotFoundException;
-import com.emilie.Lib7.Exceptions.LibraryNotFoundException;
+import com.emilie.Lib7.Exceptions.*;
 import com.emilie.Lib7.Models.Dtos.*;
 import com.emilie.Lib7.Models.Entities.*;
 import com.emilie.Lib7.Repositories.BookRepository;
@@ -66,7 +64,7 @@ public class CopyServiceImpl implements CopyService {
     public CopyDto findById(Long id) throws CopyNotFoundException {
         Optional<Copy> optionalCopy=copyRepository.findById( id );
         if (optionalCopy.isEmpty()) {
-            throw new CopyNotFoundException( "copy not found" );
+            throw new CopyNotFoundException( "copy " + id + " not found" );
         }
         Copy copy=optionalCopy.get();
         return copyToCopyDto( copy );
@@ -78,11 +76,11 @@ public class CopyServiceImpl implements CopyService {
     public CopyDto save(CopyDto copyDto) throws BookNotFoundException, LibraryNotFoundException {
         Optional<Book> optionalBook = bookRepository.findById( copyDto.getBookDto().getBookId() );
         if (!optionalBook.isPresent()) {
-            throw new BookNotFoundException( "book not found" );
+            throw new BookNotFoundException( "book " + copyDto.getBookDto().getBookId() + " not found" );
         }
         Optional<Library> optionalLibrary = libraryRepository.findById( copyDto.getLibraryDto().getLibraryId() );
         if (!optionalLibrary.isPresent()){
-            throw new LibraryNotFoundException( "library not found" );
+            throw new LibraryNotFoundException( "library " + copyDto.getLibraryDto().getLibraryId() + " not found" );
         }
         BookDto bookDto = makeBookDto( optionalBook.get());
         copyDto.setBookDto(bookDto);
@@ -100,14 +98,20 @@ public class CopyServiceImpl implements CopyService {
 
 
     @Override
-    public CopyDto update(CopyDto copyDto) throws CopyNotFoundException, BookNotFoundException, LibraryNotFoundException{
+    public CopyDto update(CopyDto copyDto)
+            throws CopyNotFoundException, BookNotFoundException, LibraryNotFoundException
+    {
         Optional<Copy> optionalCopy=copyRepository.findById( copyDto.getId() );
         if (!optionalCopy.isPresent()){
-            throw new CopyNotFoundException( "copy not found" );
+            throw new CopyNotFoundException( "copy " + copyDto.getId() + " not found" );
+        }
+        Optional<Book> optionalBook=bookRepository.findById( copyDto.getId());
+        if(!optionalBook.isPresent()){
+            throw new BookNotFoundException("book " + copyDto.getId() + " not found");
         }
         Optional<Library> optionalLibrary = libraryRepository.findById( copyDto.getLibraryDto().getLibraryId() );
         if (!optionalLibrary.isPresent()){
-            throw new LibraryNotFoundException( "library not found" );
+            throw new LibraryNotFoundException( "library " + copyDto.getLibraryDto().getLibraryId() + " not found" );
         }
 
         Copy copy=optionalCopy.get();
@@ -123,17 +127,16 @@ public class CopyServiceImpl implements CopyService {
 
 
     @Override
-    public boolean deleteById(Long id) throws CopyNotFoundException {
+    public void deleteById(Long id)
+            throws CopyNotFoundException, ImpossibleExtendLoanException
+    {
         Optional<Copy> optionalCopy=copyRepository.findById( id );
         if (!optionalCopy.isPresent()) {
-            throw new CopyNotFoundException( "Copy not found" );
+            throw new CopyNotFoundException( "Copy " + id + " not found" );
+        }else if(!optionalCopy.get().isAvailable()){
+            throw new ImpossibleDeleteCopyException("This copy " + id + " have existing loan");
         }
-        try {
-            copyRepository.deleteById( id );
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
+        copyRepository.deleteById( id );
 
     }
 

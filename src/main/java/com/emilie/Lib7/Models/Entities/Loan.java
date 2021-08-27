@@ -44,8 +44,8 @@ public class Loan implements Serializable {
     @Column(name="extended", nullable=false)
     private boolean extended;
 
-    /*@Column(name="loan_status", nullable=false)
-    private boolean loanStatus; //Boolean???*/
+    @Column(name="returned", nullable=false)
+    private boolean returned;
 
 
 
