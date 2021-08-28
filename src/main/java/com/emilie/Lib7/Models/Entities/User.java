@@ -16,33 +16,29 @@ import java.util.Set;
  * @author emilie
  */
 @Entity
-@Table(name = "user")
+@Table(name="user")
 @Getter
 @Setter
 @NoArgsConstructor
 public class User implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID=1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name="id")
     private Long id;
 
-    /*@Column(name = "username", unique=true, nullable = false)*/
-    /*private String username;*/
 
-    @Column(name = "password", nullable = false)
+    @Column(name="password", nullable=false)
     private String password;
 
-    @Column(name = "active")
+    @Column(name="active")
     private boolean active;
 
-    @Column(name = "roles", nullable = false)
+    @Column(name="roles", nullable=false)
     private String roles;
 
-    /*@Column(name = "permissions")
-    private String permissions;*/
 
     @Column(name="last_name", nullable=false)
     private String lastName;
@@ -60,19 +56,16 @@ public class User implements Serializable {
     private Address address;
 
 
-    public String getUsername(){
+    public String getUsername() {
         return email;
     }
 
     public List<String> getRolesList() {
         if (this.roles.length() > 0) {
-            return Arrays.asList(this.roles.split(","));
+            return Arrays.asList( this.roles.split( "," ) );
         }
         return new ArrayList<>();
     }
-
-
-
 
 
 }

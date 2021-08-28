@@ -27,16 +27,14 @@ public class UserServiceImpl implements UserService {
     @Autowired
     public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository=userRepository;
-        this.bCryptPasswordEncoder  = bCryptPasswordEncoder;
+        this.bCryptPasswordEncoder=bCryptPasswordEncoder;
     }
 
 
-
-
     @Override
-    public UserDto getLoggedUser(){
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserDto userDto = findByEmail( email );
+    public UserDto getLoggedUser() {
+        String email=SecurityContextHolder.getContext().getAuthentication().getName();
+        UserDto userDto=findByEmail( email );
         return userDto;
     }
 
@@ -48,8 +46,6 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException( "User not found" );
         }
         User user=optionalUser.get();
-        /*UserDto userDto1= new UserDto();*/
-        /*userDto.setLastName( user.getLastName() ); //récupération info user pour les mettre dans userDto/transvasage*/
         return userToUserDto( user );
     }
 
@@ -57,7 +53,7 @@ public class UserServiceImpl implements UserService {
     public UserDto save(UserDto userDto) throws UserAlreadyExistException, AddressNotFoundException {
         isNewUserValid( userDto );
 
-        System.out.println(userDto);
+        System.out.println( userDto );
         User user=userDtoToUser( userDto );
         user=userRepository.save( user );
 
@@ -65,53 +61,48 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void isNewUserValid(UserDto userDto){
+    public void isNewUserValid(UserDto userDto) {
         Optional<User> optionalUser=userRepository.findByEmail( userDto.getEmail() );
         if (optionalUser.isPresent()) {
             throw new UserAlreadyExistException( "Email already exists" );
         }
-        if(userDto.getAddressDto() == null){
+        if (userDto.getAddressDto() == null) {
             throw new AddressNotFoundException( "Address not found" );
         }
     }
 
 
-
     @Override
-    public UserDto update(UserDto userDto)  throws UserNotFoundException {
+    public UserDto update(UserDto userDto) throws UserNotFoundException {
         Optional<User> optionalUser=userRepository.findById( userDto.getUserId() );
-        if (userDto.getAddressDto() == null){
+        if (userDto.getAddressDto() == null) {
             throw new AddressNotFoundException( "Address not found" );
         }
-        if (!optionalUser.isPresent()){
-            throw new UserNotFoundException("User not found");
+        if (!optionalUser.isPresent()) {
+            throw new UserNotFoundException( "User not found" );
         }
 
         User user=optionalUser.get();
 
-        //TODO username refresh token
-    //    if(userDto.getPassword() != null)user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword() ));
-        //TODO Email refresh token
-        if(userDto.getEmail() != null)user.setEmail( userDto.getEmail() );
-        if(userDto.getFirstName() != null) user.setFirstName( userDto.getFirstName() );
-        if(userDto.getLastName() != null)user.setLastName( userDto.getLastName() );
-        if(userDto.getAddressDto() != null)user.setAddress(makeAddress(userDto.getAddressDto() ));
+
+        if (userDto.getEmail() != null) user.setEmail( userDto.getEmail() );
+        if (userDto.getFirstName() != null) user.setFirstName( userDto.getFirstName() );
+        if (userDto.getLastName() != null) user.setLastName( userDto.getLastName() );
+        if (userDto.getAddressDto() != null) user.setAddress( makeAddress( userDto.getAddressDto() ) );
 
         user=userRepository.save( user );
         return userToUserDto( user );
     }
 
 
-
     @Override
     public boolean deleteById(Long id)
-            throws UserNotFoundException, ImpossibleDeleteUserException
-    {
+            throws UserNotFoundException, ImpossibleDeleteUserException {
         Optional<User> optionalUser=userRepository.findById( id );
         if (!optionalUser.isPresent()) {
             throw new UserNotFoundException( "user not found" );
-        }else if(optionalUser.get().getLoans().size() > 0){
-            throw new ImpossibleDeleteUserException("This user " + id + " have existing loans");
+        } else if (optionalUser.get().getLoans().size() > 0) {
+            throw new ImpossibleDeleteUserException( "This user " + id + " have existing loans" );
         }
         try {
             userRepository.deleteById( id );
@@ -123,52 +114,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
-   /* @Override
-    public UserDto save(User user) throws UserAlreadyExistException {
-        Optional<User> registeredUser = userRepository.findByEmail(user.getEmail());
-        if (registeredUser.isPresent()){
-            throw new UserAlreadyExistException( "User already exists with this email" );
-        }
-        User savedUser = new User();
-        UserDto userDto = new UserDto();
-        userDto.setEmail(savedUser.getEmail());
-        return userDto;
-*/
-        /*savedUser.setRegistrationDate( DateTime.now());
-        Optional<User> save = userRepository.save( savedUser );
-        return savedUser;
-        }*/
-
-
-    @Override
-    public UserDto findByLastName(String lastName) throws UserNotFoundException {
-        Optional<User> optionalUser=userRepository.findByLastName( lastName );
-        if (!optionalUser.isPresent()) {
-            throw new UserNotFoundException( "User not found" );
-        }
-        User user=optionalUser.get();
-        UserDto userDto=new UserDto();
-        userDto.setLastName( user.getLastName() );
-        userDto.setEmail( user.getEmail() );
-        userDto.setFirstName( user.getFirstName() );
-
-        return userDto;
-    }
-
-   /* @Override
-    public UserDto findByUsername(String username) throws UserNotFoundException {
-        Optional<User> optionalUser = userRepository.findByUsername( username );
-        if(!optionalUser.isPresent()){
-            throw new UserNotFoundException( "User not found" );
-        }
-        User user = optionalUser.get();
-        return this.userToUserDto( user );
-    }*/
-
-
-
-
     @Override
     public UserDto findByEmail(String email) throws UserNotFoundException {
         Optional<User> optionalUser=userRepository.findByEmail( email );
@@ -177,20 +122,6 @@ public class UserServiceImpl implements UserService {
         }
         User user=optionalUser.get();
         UserDto userDto=this.userToUserDto( user );
-        //Au lieu de placé le retour de la méthode userToUserDto dans une variable userDto, on peut aussi directement le retourner
-        //a voir selon préférence.
-
-        //le this permet de pointer vers la méthode demandé dans la class utilisé, (ici on est dans UserServiceImpl)
-        //donc this.userToUserDto appelera la méthode userToUserDto de la class UserServiceImpl
-        //this. est un mot clef qui permet à une class de faire référence à elle même.
-
-        //Le code ci dessous n'est plus nécessaire, puisque c'est ce que va faire la nouvelle méthode userToUserDto
-       /* UserDto userDto = new UserDto();
-        userDto.setEmail( user.getEmail() );
-        userDto.setFirstName( user.getFirstName() );
-        userDto.setUsername( user.getUserName() );
-        userDto.setLastName( user.getLastName() );
-        userDto.setId( user.getUserId() );*/
         return userDto;
     }
 
@@ -199,47 +130,41 @@ public class UserServiceImpl implements UserService {
         List<User> users=userRepository.findAll();
         List<UserDto> userDtos=new ArrayList<>();
         for (User user : users) {
-            UserDto userDto= userToUserDto(user);
-            userDto.setPassword("");
-            userDtos.add(userDto);
+            UserDto userDto=userToUserDto( user );
+            userDto.setPassword( "" );
+            userDtos.add( userDto );
         }
         return userDtos;
     }
 
-    // Les méthodes ci-dessous sont en private, parce qu'elles ne sont pas destinées à être utilisées en dehors de la class UserServiceImpl.
-    // mais uniquement par elle-mêmes. Pour les utiliser, il faut utiliser le mot-clef this.NomDeMéthode.
-    // Le this, fait référence à l'instance qui est exécutée. donc ici UserServiceImpl
-    // de sorte que this.userToDto( unUser ) placé dans une méthode de UserServiceImpl, appelera la méthode ci-dessous
+
     private UserDto userToUserDto(User user) {
         UserDto userDto=new UserDto();
         userDto.setUserId( user.getId() );
-        userDto.setPassword(user.getPassword());
+        userDto.setPassword( user.getPassword() );
         userDto.setRoles( user.getRoles() );
         userDto.setActive( user.isActive() );
         userDto.setEmail( user.getEmail() );
         userDto.setLastName( user.getLastName() );
         userDto.setFirstName( user.getFirstName() );
 
-        Set<LoanDto> loanDtos = new HashSet<>();
-        if (user.getLoans() != null){
-            for (Loan loan : user.getLoans()){
-                LoanDto loanDto = makeLoanDto( loan );
-                loanDtos.add(loanDto);
+        Set<LoanDto> loanDtos=new HashSet<>();
+        if (user.getLoans() != null) {
+            for (Loan loan : user.getLoans()) {
+                LoanDto loanDto=makeLoanDto( loan );
+                loanDtos.add( loanDto );
             }
             userDto.setLoanDtos( loanDtos );
 
         }
 
-        AddressDto addressDto =  makeAddressDto(user.getAddress());
+        AddressDto addressDto=makeAddressDto( user.getAddress() );
 
         userDto.setAddressDto( addressDto );
 
 
         return userDto;
     }
-
-
-
 
 
     private User userDtoToUser(UserDto userDto) {
@@ -252,25 +177,25 @@ public class UserServiceImpl implements UserService {
         user.setFirstName( userDto.getFirstName() );
         user.setLastName( userDto.getLastName() );
 
-        Set<Loan> loans = new HashSet<>();
-        if (userDto.getLoanDtos() != null){
-            for(LoanDto loanDto : userDto.getLoanDtos()){
-                Loan loan = makeLoan( loanDto );
-                loans.add(loan);
+        Set<Loan> loans=new HashSet<>();
+        if (userDto.getLoanDtos() != null) {
+            for (LoanDto loanDto : userDto.getLoanDtos()) {
+                Loan loan=makeLoan( loanDto );
+                loans.add( loan );
             }
             user.setLoans( loans );
         }
 
-        Address address =  makeAddress(userDto.getAddressDto());
+        Address address=makeAddress( userDto.getAddressDto() );
         user.setAddress( address );
 
         return user;
     }
 
 
-    private AddressDto makeAddressDto(Address address){
+    private AddressDto makeAddressDto(Address address) {
 
-        AddressDto addressDto = new AddressDto();
+        AddressDto addressDto=new AddressDto();
         addressDto.setNumber( address.getNumber() );
         addressDto.setStreet( address.getStreet() );
         addressDto.setZipCode( address.getZipCode() );
@@ -279,9 +204,9 @@ public class UserServiceImpl implements UserService {
         return addressDto;
     }
 
-    private Address makeAddress(AddressDto addressDto){
+    private Address makeAddress(AddressDto addressDto) {
 
-        Address address = new Address();
+        Address address=new Address();
         address.setNumber( addressDto.getNumber() );
         address.setStreet( addressDto.getStreet() );
         address.setZipCode( addressDto.getZipCode() );
@@ -290,40 +215,40 @@ public class UserServiceImpl implements UserService {
         return address;
     }
 
-    private LoanDto makeLoanDto(Loan loan){
-        LoanDto loanDto = new LoanDto();
-        loanDto.setId(loan.getId());
-        loanDto.setLoanStartDate(loan.getLoanStartDate());
+    private LoanDto makeLoanDto(Loan loan) {
+        LoanDto loanDto=new LoanDto();
+        loanDto.setId( loan.getId() );
+        loanDto.setLoanStartDate( loan.getLoanStartDate() );
         loanDto.setLoanEndDate( loan.getLoanEndDate() );
         loanDto.setExtended( loan.isExtended() );
-        loanDto.setReturned( loan.isReturned());
+        loanDto.setReturned( loan.isReturned() );
         loanDto.setCopyDto( makeCopyDto( loan.getCopy() ) );
         return loanDto;
     }
 
-    private Loan makeLoan(LoanDto loanDto){
+    private Loan makeLoan(LoanDto loanDto) {
 
-        Loan loan = new Loan();
+        Loan loan=new Loan();
         loan.setId( loanDto.getId() );
         loan.setLoanStartDate( loanDto.getLoanStartDate() );
         loan.setLoanEndDate( loanDto.getLoanEndDate() );
         loan.setExtended( loanDto.isExtended() );
-        loan.setReturned( loanDto.isReturned());
+        loan.setReturned( loanDto.isReturned() );
         loan.setCopy( makeCopy( loanDto.getCopyDto() ) );
         return loan;
     }
 
-    private CopyDto makeCopyDto(Copy copy){
-        CopyDto copyDto = new CopyDto();
-        copyDto.setId(copy.getId());
+    private CopyDto makeCopyDto(Copy copy) {
+        CopyDto copyDto=new CopyDto();
+        copyDto.setId( copy.getId() );
         copyDto.setAvailable( copy.isAvailable() );
         copyDto.setBookDto( makeBookDto( copy.getBook() ) );
         copyDto.setLibraryDto( makeLibraryDto( copy.getLibrary() ) );
         return copyDto;
     }
 
-    private Copy makeCopy(CopyDto copyDto){
-        Copy copy = new Copy();
+    private Copy makeCopy(CopyDto copyDto) {
+        Copy copy=new Copy();
         copy.setId( copyDto.getId() );
         copy.setAvailable( copyDto.isAvailable() );
         copy.setBook( makeBook( copyDto.getBookDto() ) );
@@ -331,8 +256,8 @@ public class UserServiceImpl implements UserService {
         return copy;
     }
 
-    private BookDto makeBookDto(Book book){
-        BookDto bookDto = new BookDto();
+    private BookDto makeBookDto(Book book) {
+        BookDto bookDto=new BookDto();
         bookDto.setBookId( book.getBookId() );
         bookDto.setTitle( book.getTitle() );
         bookDto.setIsbn( book.getIsbn() );
@@ -340,42 +265,42 @@ public class UserServiceImpl implements UserService {
         return bookDto;
     }
 
-    private Book makeBook(BookDto bookDto){
-        Book book = new Book();
-        book.setBookId(bookDto.getBookId());
+    private Book makeBook(BookDto bookDto) {
+        Book book=new Book();
+        book.setBookId( bookDto.getBookId() );
         book.setTitle( bookDto.getTitle() );
         book.setIsbn( bookDto.getIsbn() );
-        book.setAuthor(makeAuthor(bookDto.getAuthorDto()));
+        book.setAuthor( makeAuthor( bookDto.getAuthorDto() ) );
         return book;
     }
 
-    private LibraryDto makeLibraryDto(Library library){
-        LibraryDto libraryDto = new LibraryDto();
-        libraryDto.setLibraryId(library.getLibraryId() );
+    private LibraryDto makeLibraryDto(Library library) {
+        LibraryDto libraryDto=new LibraryDto();
+        libraryDto.setLibraryId( library.getLibraryId() );
         libraryDto.setName( library.getName() );
         return libraryDto;
     }
 
-    private Library makeLibrary(LibraryDto libraryDto){
-        Library library = new Library();
+    private Library makeLibrary(LibraryDto libraryDto) {
+        Library library=new Library();
         library.setLibraryId( libraryDto.getLibraryId() );
         library.setName( libraryDto.getName() );
         library.setPhoneNumber( libraryDto.getPhoneNumber() );
-        library.setAddress(makeAddress(libraryDto.getAddressDto() ) );
+        library.setAddress( makeAddress( libraryDto.getAddressDto() ) );
         return library;
     }
 
-    private AuthorDto makeAuthorDto(Author author){
-        AuthorDto authorDto = new AuthorDto();
+    private AuthorDto makeAuthorDto(Author author) {
+        AuthorDto authorDto=new AuthorDto();
         authorDto.setAuthorId( author.getAuthorId() );
         authorDto.setFirstName( author.getFirstName() );
         authorDto.setLastName( author.getLastName() );
         return authorDto;
     }
 
-    private Author makeAuthor(AuthorDto authorDto){
-        Author author = new Author();
-        author.setAuthorId( authorDto.getAuthorId());
+    private Author makeAuthor(AuthorDto authorDto) {
+        Author author=new Author();
+        author.setAuthorId( authorDto.getAuthorId() );
         author.setFirstName( authorDto.getFirstName() );
         author.setLastName( authorDto.getLastName() );
         return author;

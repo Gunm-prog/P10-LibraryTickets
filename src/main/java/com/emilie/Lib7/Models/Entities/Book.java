@@ -1,12 +1,10 @@
 package com.emilie.Lib7.Models.Entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,9 +15,9 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(exclude="author")
-public class Book implements Serializable{
+public class Book implements Serializable {
 
-    public static final long serialVersionUID = 1L;
+    public static final long serialVersionUID=1L;
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -37,33 +35,10 @@ public class Book implements Serializable{
 
     @JsonIgnoreProperties("books")
     @ManyToOne
-    @JoinColumn(name="author_id", nullable = false)
+    @JoinColumn(name="author_id", nullable=false)
     private Author author;
 
     @OneToMany(mappedBy="book")
     private Set<Copy> copies;
-
-    /*@ManyToOne
-    @JoinColumn(name="cover_id")
-    private Cover cover;*/
-
-    /*@Enumerated(EnumType.STRING)
-    @Column(name="category", length=20, nullable false)
-    private Category category;
-     */
-
-    /*@OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name="category_id", referencedColumnName="id")
-    private Category category;*/
-
-
-
-
-
-
-
-
-
-
 
 }

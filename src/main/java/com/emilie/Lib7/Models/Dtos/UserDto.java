@@ -3,7 +3,6 @@ package com.emilie.Lib7.Models.Dtos;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 import java.io.Serializable;
 import java.util.Set;
 
@@ -22,12 +21,7 @@ public class UserDto implements Serializable {
     private String roles;
     private Set<LoanDto> loanDtos;
     private CopyDto CopyDto;
-    private AddressDto addressDto = null;
-
-   /* private String cardNumber;
-    private DateTime registrationDate;
-    private AddressDto addressDto;*/
-
+    private AddressDto addressDto=null;
 
 }
 

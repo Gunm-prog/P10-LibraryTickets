@@ -20,11 +20,17 @@ public class UserPrincipal implements UserDetails {
         this.user=user;
     }
 
-    public Long getUserId(){
-            return this.user.getId();
-        }
-    public String getLastname(){return this.user.getLastName();}
-    public String getFirstname(){return this.user.getFirstName();}
+    public Long getUserId() {
+        return this.user.getId();
+    }
+
+    public String getLastname() {
+        return this.user.getLastName();
+    }
+
+    public String getFirstname() {
+        return this.user.getFirstName();
+    }
 
     /**
      * Returns the authorities granted to the user. Cannot return <code>null</code>.
@@ -34,18 +40,18 @@ public class UserPrincipal implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        List<GrantedAuthority> grantedAuthorities=new ArrayList<>();
 
         this.user.getRolesList().forEach( r -> {
-            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + r);
-            grantedAuthorities.add(grantedAuthority);
-        });
+            GrantedAuthority grantedAuthority=new SimpleGrantedAuthority( "ROLE_" + r );
+            grantedAuthorities.add( grantedAuthority );
+        } );
 
         return grantedAuthorities;
 
     }
 
-    public String getRole(){
+    public String getRole() {
         return this.user.getRoles();
     }
 

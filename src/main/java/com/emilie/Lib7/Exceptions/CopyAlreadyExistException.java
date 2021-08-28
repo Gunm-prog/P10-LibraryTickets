@@ -5,5 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class CopyAlreadyExistException extends RuntimeException {
-    public CopyAlreadyExistException(String message) { super(message);}
+    public CopyAlreadyExistException(String message) {
+        super( message );
+    }
 }

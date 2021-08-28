@@ -10,7 +10,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class LoanDto implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID=1L;
 
     private Long id;
     private Date loanStartDate;

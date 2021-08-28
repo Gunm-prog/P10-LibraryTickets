@@ -15,7 +15,7 @@ import java.util.Date;
 
 public class Loan implements Serializable {
 
- public static final long serialVersionUID = 1L;
+    public static final long serialVersionUID=1L;
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -38,19 +38,10 @@ public class Loan implements Serializable {
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date loanEndDate;
 
-   /*@Column(name = "expected_return_date", nullable = false)
-   private Date expectedReturnDate;*/
-
     @Column(name="extended", nullable=false)
     private boolean extended;
 
     @Column(name="returned", nullable=false)
     private boolean returned;
-
-
-
-
-
-
 
 }

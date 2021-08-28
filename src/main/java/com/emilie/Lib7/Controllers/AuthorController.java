@@ -2,13 +2,9 @@ package com.emilie.Lib7.Controllers;
 
 import com.emilie.Lib7.Exceptions.AuthorAlreadyExistException;
 import com.emilie.Lib7.Exceptions.AuthorNotFoundException;
-import com.emilie.Lib7.Exceptions.BookNotFoundException;
 import com.emilie.Lib7.Exceptions.ImpossibleDeleteAuthorException;
 import com.emilie.Lib7.Models.Dtos.AuthorDto;
-import com.emilie.Lib7.Models.Entities.Author;
-import com.emilie.Lib7.Models.Entities.Book;
 import com.emilie.Lib7.Services.contract.AuthorsService;
-import com.emilie.Lib7.Services.contract.BookService;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,48 +20,46 @@ import java.util.List;
 public class AuthorController {
 
     private final AuthorsService authorsService;
-    private Author authorDto;
 
 
     @Autowired
-    public AuthorController(AuthorsService authorsService){
+    public AuthorController(AuthorsService authorsService) {
 
         this.authorsService=authorsService;
 
     }
 
-    @ApiOperation( value="Retrieve userlist from database" )
+    @ApiOperation(value="Retrieve userlist from database")
     @GetMapping("/list")
-    public ResponseEntity<?> findAll(){
-        try{
-            List<AuthorDto> authorDtos = authorsService.findAll();
-            return new ResponseEntity<List<AuthorDto>>(authorDtos, HttpStatus.OK  );
-        }catch(Exception e){
-            log.warn(e.getMessage(),e);
+    public ResponseEntity<?> findAll() {
+        try {
+            List<AuthorDto> authorDtos=authorsService.findAll();
+            return new ResponseEntity<List<AuthorDto>>( authorDtos, HttpStatus.OK );
+        } catch (Exception e) {
+            log.warn( e.getMessage(), e );
             return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("INTERNAL_SERVER_ERROR");
+                    .status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( "INTERNAL_SERVER_ERROR" );
         }
     }
 
-    @ApiOperation( value="Retrieve an author by its id if existing in database" )
+    @ApiOperation(value="Retrieve an author by its id if existing in database")
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable(value="id") Long id)
-            throws AuthorNotFoundException
-    {
-        try{
-            AuthorDto authorDto = authorsService.findById( id );
-            return new ResponseEntity<AuthorDto>(authorDto, HttpStatus.OK  );
-        }catch(AuthorNotFoundException e) {
-            log.error(e.getMessage());
+            throws AuthorNotFoundException {
+        try {
+            AuthorDto authorDto=authorsService.findById( id );
+            return new ResponseEntity<AuthorDto>( authorDto, HttpStatus.OK );
+        } catch (AuthorNotFoundException e) {
+            log.error( e.getMessage() );
             return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
-        }catch(Exception e){
-            log.warn(e.getMessage(),e);
+                    .status( HttpStatus.NOT_FOUND )
+                    .body( e.getMessage() );
+        } catch (Exception e) {
+            log.warn( e.getMessage(), e );
             return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("INTERNAL_SERVER_ERROR");
+                    .status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( "INTERNAL_SERVER_ERROR" );
         }
 
     }
@@ -73,84 +67,68 @@ public class AuthorController {
 
     @PostMapping("/newAuthor")
     public ResponseEntity<String> save(@RequestBody AuthorDto authorDto)
-            throws AuthorAlreadyExistException
-    {
-        try{
-            AuthorDto newAuthorDto = authorsService.save( authorDto );
-            log.info("Author " + newAuthorDto.getAuthorId() + " has been created");
-            return new ResponseEntity<String>("Author " + newAuthorDto.getAuthorId() + " has been created",HttpStatus.CREATED );
-        }catch(AuthorAlreadyExistException e) {
-            log.error(e.getMessage());
+            throws AuthorAlreadyExistException {
+        try {
+            AuthorDto newAuthorDto=authorsService.save( authorDto );
+            log.info( "Author " + newAuthorDto.getAuthorId() + " has been created" );
+            return new ResponseEntity<String>( "Author " + newAuthorDto.getAuthorId() + " has been created", HttpStatus.CREATED );
+        } catch (AuthorAlreadyExistException e) {
+            log.error( e.getMessage() );
             return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(e.getMessage());
-        }catch(Exception e){
-            log.warn(e.getMessage(),e);
+                    .status( HttpStatus.CONFLICT )
+                    .body( e.getMessage() );
+        } catch (Exception e) {
+            log.warn( e.getMessage(), e );
             return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("INTERNAL_SERVER_ERROR");
+                    .status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( "INTERNAL_SERVER_ERROR" );
         }
 
     }
 
     @PutMapping("/updateAuthor")
     public ResponseEntity<?> update(@RequestBody AuthorDto authorDto)
-            throws AuthorNotFoundException
-    {
-        try{
-            AuthorDto authorDto1 = authorsService.update( authorDto );
-            log.info("Author " + authorDto1.getAuthorId() + " has been updated");
-            return new ResponseEntity<AuthorDto>(authorDto1, HttpStatus.OK  );
-        }catch(AuthorNotFoundException e) {
-            log.error(e.getMessage());
+            throws AuthorNotFoundException {
+        try {
+            AuthorDto authorDto1=authorsService.update( authorDto );
+            log.info( "Author " + authorDto1.getAuthorId() + " has been updated" );
+            return new ResponseEntity<AuthorDto>( authorDto1, HttpStatus.OK );
+        } catch (AuthorNotFoundException e) {
+            log.error( e.getMessage() );
             return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
-        }catch(Exception e){
-            log.warn(e.getMessage(),e);
+                    .status( HttpStatus.NOT_FOUND )
+                    .body( e.getMessage() );
+        } catch (Exception e) {
+            log.warn( e.getMessage(), e );
             return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("INTERNAL_SERVER_ERROR");
+                    .status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( "INTERNAL_SERVER_ERROR" );
         }
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable(value="id")Long id)
-            throws AuthorNotFoundException, ImpossibleDeleteAuthorException
-    {
-        try{
-            authorsService.deleteById(id);
-            log.info("Author " + id + " has been deleted");
-            return new ResponseEntity<String>("Author " + id + " has been deleted", HttpStatus.OK) ;
-        }catch(AuthorNotFoundException e) {
-            log.error(e.getMessage());
+    public ResponseEntity<String> deleteById(@PathVariable(value="id") Long id)
+            throws AuthorNotFoundException, ImpossibleDeleteAuthorException {
+        try {
+            authorsService.deleteById( id );
+            log.info( "Author " + id + " has been deleted" );
+            return new ResponseEntity<String>( "Author " + id + " has been deleted", HttpStatus.OK );
+        } catch (AuthorNotFoundException e) {
+            log.error( e.getMessage() );
             return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
-        }catch(ImpossibleDeleteAuthorException e) {
-            log.error(e.getMessage());
+                    .status( HttpStatus.NOT_FOUND )
+                    .body( e.getMessage() );
+        } catch (ImpossibleDeleteAuthorException e) {
+            log.error( e.getMessage() );
             return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(e.getMessage());
-        }catch(Exception e){
-            log.warn(e.getMessage(),e);
+                    .status( HttpStatus.CONFLICT )
+                    .body( e.getMessage() );
+        } catch (Exception e) {
+            log.warn( e.getMessage(), e );
             return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("INTERNAL_SERVER_ERROR");
+                    .status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( "INTERNAL_SERVER_ERROR" );
         }
-        /*if (authorsService.deleteById(id)){
-            return ResponseEntity.status( HttpStatus.OK ).build();
-        }else {
-            return ResponseEntity.status( 500 ).build();
-        }*/
+
     }
-
-
-    //todo useless?
-   /* @GetMapping("/lastName/{lastName}")
-    public ResponseEntity<AuthorDto> findByLastName(@PathVariable String lastName) throws AuthorNotFoundException {
-        AuthorDto authorDto=authorsService.findByLastName( lastName );
-        return new ResponseEntity<AuthorDto>(authorDto, HttpStatus.OK);
-    }*/
-
 }

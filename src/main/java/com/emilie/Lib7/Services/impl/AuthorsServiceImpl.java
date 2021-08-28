@@ -36,8 +36,8 @@ public class AuthorsServiceImpl implements AuthorsService {
         List<Author> authors=authorsRepository.findAll();
         List<AuthorDto> authorDtos=new ArrayList<>();
         for (Author author : authors) {
-            AuthorDto authorDto =  authorToAuthorDto( author );
-            authorDtos.add(authorDto);
+            AuthorDto authorDto=authorToAuthorDto( author );
+            authorDtos.add( authorDto );
         }
         return authorDtos;
     }
@@ -53,13 +53,10 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
 
-
     @Override
     public AuthorDto save(AuthorDto authorDto)
-            throws AuthorAlreadyExistException
-    {
-        //Optional<Author> optionalAuthor=authorsRepository.findById( authorDto.getAuthorId() );
-        Optional<Author> optionalAuthor=authorsRepository.findByName( authorDto.getFirstName() , authorDto.getLastName() );
+            throws AuthorAlreadyExistException {
+        Optional<Author> optionalAuthor=authorsRepository.findByName( authorDto.getFirstName(), authorDto.getLastName() );
         if (optionalAuthor.isPresent()) {
             throw new AuthorAlreadyExistException( "author already exists" );
         }
@@ -72,28 +69,26 @@ public class AuthorsServiceImpl implements AuthorsService {
 
     @Override
     public AuthorDto update(AuthorDto authorDto)
-            throws AuthorNotFoundException
-    {
+            throws AuthorNotFoundException {
         Optional<Author> optionalAuthor=authorsRepository.findById( authorDto.getAuthorId() );
-        if (!optionalAuthor.isPresent()){
+        if (!optionalAuthor.isPresent()) {
             throw new AuthorNotFoundException( "author not found" );
         }
         Author author=optionalAuthor.get();
         author.setFirstName( authorDto.getFirstName() );
-        author.setLastName( authorDto.getLastName());
+        author.setLastName( authorDto.getLastName() );
         author=authorsRepository.save( author );
         return authorToAuthorDto( author );
     }
 
     @Override
     public boolean deleteById(Long id)
-            throws AuthorNotFoundException, ImpossibleDeleteAuthorException
-    {
+            throws AuthorNotFoundException, ImpossibleDeleteAuthorException {
         Optional<Author> optionalAuthor=authorsRepository.findById( id );
         if (!optionalAuthor.isPresent()) {
             throw new AuthorNotFoundException( "author not found" );
-        }else if (optionalAuthor.get().getBooks().size() > 0){
-            throw new ImpossibleDeleteAuthorException("This author " + id + " have existing books");
+        } else if (optionalAuthor.get().getBooks().size() > 0) {
+            throw new ImpossibleDeleteAuthorException( "This author " + id + " have existing books" );
         }
         try {
             authorsRepository.deleteById( id );
@@ -103,27 +98,6 @@ public class AuthorsServiceImpl implements AuthorsService {
         return true;
     }
 
-    @Override
-    public AuthorDto findByFirstName(String firstName) {
-        Optional<Author> optionalAuthor=authorsRepository.findByFirstName( firstName );
-        if (!optionalAuthor.isPresent()) {
-            throw new AuthorNotFoundException( "author not found" );
-        }
-        Author author=optionalAuthor.get();
-
-        return authorToAuthorDto( author );
-    }
-
-    @Override
-    public AuthorDto findByLastName(String lastName) {
-        Optional<Author> optionalAuthor=authorsRepository.findByLastName( lastName );
-        if (!optionalAuthor.isPresent()) {
-            throw new AuthorNotFoundException( "author not found" );
-        }
-        Author author=optionalAuthor.get();
-
-        return authorToAuthorDto( author );
-    }
 
 
     private AuthorDto authorToAuthorDto(Author author) {
@@ -132,30 +106,28 @@ public class AuthorsServiceImpl implements AuthorsService {
         authorDto.setFirstName( author.getFirstName() );
         authorDto.setLastName( author.getLastName() );
 
-        Set<BookDto> bookDtos = new HashSet<>();
-        if(author.getBooks() != null){
+        Set<BookDto> bookDtos=new HashSet<>();
+        if (author.getBooks() != null) {
             for (Book book : author.getBooks()) {
-                BookDto bookDto = new BookDto();
+                BookDto bookDto=new BookDto();
                 bookDto.setBookId( book.getBookId() );
                 bookDto.setTitle( book.getTitle() );
                 bookDto.setIsbn( book.getIsbn() );
                 bookDto.setSummary( book.getSummary() );
 
-                Set<CopyDto> copyDtos = new HashSet<>();
-                bookDto.setCopyDtos(copyDtos);
-                /*bookDto.setCopy(book.ge);*/
+                Set<CopyDto> copyDtos=new HashSet<>();
+                bookDto.setCopyDtos( copyDtos );
                 bookDtos.add( bookDto );
             }
         }
         authorDto.setBookDtos( bookDtos );
 
 
-
         return authorDto;
     }
 
 
-   private Author authorDtoToAuthor(AuthorDto authorDto) {
+    private Author authorDtoToAuthor(AuthorDto authorDto) {
         Author author=new Author();
         author.setAuthorId( authorDto.getAuthorId() );
         author.setFirstName( authorDto.getFirstName() );
@@ -163,18 +135,18 @@ public class AuthorsServiceImpl implements AuthorsService {
 
 
         Set<Book> books=new HashSet<>();
-        if (authorDto.getBookDtos() != null){
+        if (authorDto.getBookDtos() != null) {
             for (BookDto bookDto : authorDto.getBookDtos()) {
-                Book book = new Book();
+                Book book=new Book();
                 book.setBookId( bookDto.getBookId() );
                 book.setTitle( bookDto.getTitle() );
                 book.setIsbn( bookDto.getIsbn() );
                 book.setSummary( bookDto.getSummary() );
 
-                Set<Copy> copies = new HashSet<>();
-                book.setCopies(copies);
+                Set<Copy> copies=new HashSet<>();
+                book.setCopies( copies );
 
-            books.add( book );
+                books.add( book );
             }
         }
 

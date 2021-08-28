@@ -1,7 +1,5 @@
 package com.emilie.Lib7.Models.Entities;
 
-
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,8 +10,8 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @Table(name="category")
-public class Category implements Serializable{
-    private static final long serialVersionUID = 1L;
+public class Category implements Serializable {
+    private static final long serialVersionUID=1L;
 
     @Id
     @Column(name="category_id")
@@ -22,8 +20,8 @@ public class Category implements Serializable{
     @Column(name="label")
     private String label;
 
-    @OneToOne(cascade= CascadeType.ALL)
-    @JoinColumn(name= "book_id", referencedColumnName="id")
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name="book_id", referencedColumnName="id")
     private Book book;
 
 }

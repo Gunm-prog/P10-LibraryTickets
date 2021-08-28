@@ -6,7 +6,7 @@ import com.emilie.Lib7.Models.Dtos.CopyDto;
 
 import java.util.List;
 
-public interface CopyService  {
+public interface CopyService {
 
     CopyDto findById(Long id) throws CopyNotFoundException;
 
@@ -14,7 +14,7 @@ public interface CopyService  {
 
     CopyDto update(CopyDto copyDto);
 
-    void deleteById(Long id) throws  CopyNotFoundException;
+    void deleteById(Long id) throws CopyNotFoundException;
 
     List<CopyDto> findAll();
 

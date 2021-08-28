@@ -2,7 +2,6 @@
 package com.emilie.Lib7.Services.contract;
 
 
-import com.emilie.Lib7.Models.Dtos.AddressDto;
 import com.emilie.Lib7.Models.Dtos.CopyDto;
 import com.emilie.Lib7.Models.Dtos.LibraryDto;
 import org.springframework.stereotype.Repository;
@@ -16,7 +15,6 @@ public interface LibraryService {
 
     List<LibraryDto> findAll();
 
-
     LibraryDto findById(Long id);
 
     LibraryDto save(LibraryDto libraryDto);
@@ -26,9 +24,6 @@ public interface LibraryService {
     boolean deleteById(Long id);
 
     Set<CopyDto> findCopiesByLibraryId(Long id);
-
-List<LibraryDto> findByAddress(AddressDto address);
-
 
 }
 

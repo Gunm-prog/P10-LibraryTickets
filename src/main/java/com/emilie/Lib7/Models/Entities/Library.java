@@ -32,19 +32,11 @@ public class Library implements Serializable {
     private Address address;
 
 
-
     @OneToMany(mappedBy="library")
     @JsonIgnoreProperties("libraries")
     private Set<Copy> copies;
 }
 
-    /*@ManyToOne
-    @JoinColumn(name="adress_id")
-    private Address address;
-
-    @OneToMany(mappedBy="library")
-    @JsonIgnoreProperties("libraries")
-    private Set<Copy> copies;*/
 
 
 

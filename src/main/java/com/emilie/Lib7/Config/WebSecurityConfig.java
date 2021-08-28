@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -34,7 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // configure AuthenticationManager so that it knows from where to load
         // user for matching credentials
         // Use BCryptPasswordEncoder
-        auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService( jwtUserDetailsService ).passwordEncoder( passwordEncoder() );
     }
 
     @Bean
@@ -53,32 +53,31 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // We don't need CSRF for this example
         httpSecurity.csrf().disable()
                 // dont authenticate this particular request
-                .authorizeRequests().antMatchers("/authenticate").permitAll()
+                .authorizeRequests().antMatchers( "/authenticate" ).permitAll()
                 .and()
-                .authorizeRequests().antMatchers("/register/customer").permitAll()
+                .authorizeRequests().antMatchers( "/register/customer" ).permitAll()
                 .and()
-                .authorizeRequests().antMatchers("/api/v1/copies/search").permitAll()
+                .authorizeRequests().antMatchers( "/api/v1/copies/search" ).permitAll()
                 .and()
-                .authorizeRequests().antMatchers("/api/v1/libraries/{id}").permitAll()
+                .authorizeRequests().antMatchers( "/api/v1/libraries/{id}" ).permitAll()
                 .and()
-                .authorizeRequests().antMatchers("/api/v1/books/{id}").permitAll()
+                .authorizeRequests().antMatchers( "/api/v1/books/{id}" ).permitAll()
                 /*.and()*/
                 /*.authorizeRequests().antMatchers("/api/v1/users/createUserAccount").permitAll()*/
-                .antMatchers("/register/employee").hasAnyRole(JwtProperties.ROLE_ADMIN,JwtProperties.ROLE_EMPLOYEE)
+                .antMatchers( "/register/employee" ).hasAnyRole( JwtProperties.ROLE_ADMIN, JwtProperties.ROLE_EMPLOYEE )
                 /*.antMatchers("/edit/**").hasRole(JwtProperties.ROLE_TECHNICAL)*/
-                .antMatchers("/api/v1/delete/**").hasAnyRole(JwtProperties.ROLE_ADMIN,JwtProperties.ROLE_EMPLOYEE)
-                .antMatchers("/api/v1/loans/return/{id}").hasAnyRole( JwtProperties.ROLE_ADMIN, JwtProperties.ROLE_EMPLOYEE )
-
+                .antMatchers( "/api/v1/delete/**" ).hasAnyRole( JwtProperties.ROLE_ADMIN, JwtProperties.ROLE_EMPLOYEE )
+                .antMatchers( "/api/v1/loans/return/{id}" ).hasAnyRole( JwtProperties.ROLE_ADMIN, JwtProperties.ROLE_EMPLOYEE )
 
 
                 // all other requests need to be authenticated
-                        .anyRequest().authenticated().and().
+                .anyRequest().authenticated().and().
                 // make sure we use stateless session; session won't be used to
                 // store user's state.
-                        exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                        exceptionHandling().authenticationEntryPoint( jwtAuthenticationEntryPoint ).and().sessionManagement()
+                .sessionCreationPolicy( SessionCreationPolicy.STATELESS );
 
         // Add a filter to validate the tokens with every request
-        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore( jwtRequestFilter, UsernamePasswordAuthenticationFilter.class );
     }
 }

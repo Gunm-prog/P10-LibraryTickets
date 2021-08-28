@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface BookRepository extends JpaRepository<Book, Long> {
 
 
-    @Query(value = "SELECT DISTINCT book FROM Book book " +
+    @Query(value="SELECT DISTINCT book FROM Book book " +
             "JOIN Copy copy ON book.id = copy.book.id " +
             "JOIN book.author author " +
             "JOIN copy.library library " +
@@ -28,12 +28,12 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "OR  LOWER(book.isbn) LIKE '%' || LOWER(:isbn) || '%' " +
             " ) " +
             ")")
-    List<Book> searchBooks (@Param("title") String title,
-                            @Param("isbn") String isbn,
-                            @Param("firstname") String firstName,
-                            @Param( "lastname" ) String lastName);
+    List<Book> searchBooks(@Param("title") String title,
+                           @Param("isbn") String isbn,
+                           @Param("firstname") String firstName,
+                           @Param("lastname") String lastName);
 
-    @Query(value = "SELECT DISTINCT book FROM Book book " +
+    @Query(value="SELECT DISTINCT book FROM Book book " +
             "JOIN Copy copy ON book.id = copy.book.id " +
             "JOIN book.author author " +
             "JOIN copy.library library " +
@@ -45,33 +45,20 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "OR  LOWER(book.isbn) LIKE '%' || LOWER(:isbn) || '%' " +
             " ) AND library.libraryId = :libraryId " +
             ")")
-    List<Book> searchBooksByLibrary (@Param("libraryId") Long libraryId,
-                                     @Param("title") String title,
-                                     @Param("isbn") String isbn,
-                                     @Param("firstname") String firstName ,
-                                     @Param( "lastname" ) String lastName);
+    List<Book> searchBooksByLibrary(@Param("libraryId") Long libraryId,
+                                    @Param("title") String title,
+                                    @Param("isbn") String isbn,
+                                    @Param("firstname") String firstName,
+                                    @Param("lastname") String lastName);
 
-
-
-
-
-    /*@Query(value = "SELECT DISTINCT book FROM Book book " +
-            "JOIN Copy copy ON book.id = copy.book.id " +
-            "JOIN copy.library library " +
-            "WHERE library.libraryId = :libraryId ")
-    List<Book> findBooksByLibraryId( @Param( "libraryId" ) Long id);*/
 
     List<Book> findAll();
+
     Optional<Book> findByTitle(String title);
 
     Optional<Book> findByAuthor(Author author);
 
     Optional<Book> findById(Long id);
 
-
-
-
-
-    /* Optional<Book> findByAuthor(Author author);*/
 
 }

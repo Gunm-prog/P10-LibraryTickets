@@ -10,14 +10,13 @@ public interface LoanService {
 
     LoanDto findById(Long id) throws LoanNotFoundException;
 
-
     LoanDto save(LoanDto loanDto) throws LoanAlreadyExistsException;
 
     List<LoanDto> findLoansByUserId(Long userId);
 
     LoanDto update(LoanDto loanDto);
 
-    void deleteById(Long id) throws  LoanNotFoundException;
+    void deleteById(Long id) throws LoanNotFoundException;
 
     List<LoanDto> findAll();
 
@@ -25,5 +24,5 @@ public interface LoanService {
 
     List<LoanDto> findDelay();
 
-    LoanDto returnLoan(Long loanId) throws  LoanNotFoundException;
+    LoanDto returnLoan(Long loanId) throws LoanNotFoundException;
 }

@@ -18,16 +18,13 @@ public interface UserService {
 
     void isNewUserValid(UserDto userDto);
 
-    UserDto findByLastName(String lastName) throws UserNotFoundException;
-
-
     UserDto findByEmail(String email) throws UserNotFoundException;
 
     List<UserDto> findAll();
 
     boolean deleteById(Long id) throws UserNotFoundException;
 
-    UserDto update(UserDto userDto)  throws UserNotFoundException;
+    UserDto update(UserDto userDto) throws UserNotFoundException;
 
 
 }

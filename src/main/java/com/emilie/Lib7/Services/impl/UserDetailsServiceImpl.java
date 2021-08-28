@@ -16,25 +16,23 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
 
     public UserDetailsServiceImpl(UserRepository userAuthenticationRepository) {
-        this.userRepository= userAuthenticationRepository;
+        this.userRepository=userAuthenticationRepository;
 
     }
 
 
     @Override
     public UserPrincipal loadUserByUsername(String email) {
-        Optional<User> userJwt= userRepository.findByEmail(email);
+        Optional<User> userJwt=userRepository.findByEmail( email );
         if (userJwt.isEmpty()) {
-            throw new UsernameNotFoundException("No user found for "+ email + ".");
+            throw new UsernameNotFoundException( "No user found for " + email + "." );
         }
         return new UserPrincipal( userJwt.get() );
     }
 
     public User save(User user) {
-       return this.userRepository.save( user );
+        return this.userRepository.save( user );
     }
-
-
 
 
 }

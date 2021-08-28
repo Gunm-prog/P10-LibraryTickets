@@ -3,11 +3,11 @@ package com.emilie.Lib7.Exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(code=HttpStatus.NOT_FOUND, reason="Impossible extend of loan")
-public class ImpossibleExtendLoanException extends RuntimeException {
+@ResponseStatus(code=HttpStatus.NOT_FOUND, reason="Impossible delete author")
+public class ImpossibleDeleteAuthorException extends RuntimeException {
     private static final long serialVersionUID=1L;
 
-    public ImpossibleExtendLoanException(String errorMessage) {
+    public ImpossibleDeleteAuthorException(String errorMessage) {
         super( errorMessage );
     }
 

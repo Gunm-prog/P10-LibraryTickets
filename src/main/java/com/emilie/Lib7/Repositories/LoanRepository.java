@@ -14,22 +14,18 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
 
     Optional<Loan> findById(Long id);
 
-    Loan save (Loan loan);
-
-
+    Loan save(Loan loan);
 
     void deleteById(Long id);
-
 
     Optional<Loan> findByCopyId(Long id);
 
 
-    @Query(value = "SELECT l FROM Loan l " +
+    @Query(value="SELECT l FROM Loan l " +
             "WHERE l.user.id = :userId")
-
     List<Loan> findLoansByUserId(@Param("userId") Long userId);
 
-    @Query(value = "SELECT loan FROM Loan loan WHERE DATEDIFF(DATE(NOW()), loan.loanEndDate) >= 0")
+    @Query(value="SELECT loan FROM Loan loan WHERE DATEDIFF(DATE(NOW()), loan.loanEndDate) >= 0")
     List<Loan> searchDelay();
 
 }

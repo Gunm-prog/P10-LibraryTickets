@@ -40,8 +40,8 @@ public class LibraryServiceImpl implements LibraryService {
         List<Library> libraries=libraryRepository.findAll();
         List<LibraryDto> libraryDtos=new ArrayList<>();
         for (Library library : libraries) {
-            LibraryDto libraryDto= libraryToLibraryDto(library);
-            libraryDtos.add(libraryDto);
+            LibraryDto libraryDto=libraryToLibraryDto( library );
+            libraryDtos.add( libraryDto );
         }
         return libraryDtos;
     }
@@ -86,8 +86,8 @@ public class LibraryServiceImpl implements LibraryService {
         Optional<Library> optionalLibrary=libraryRepository.findById( id );
         if (!optionalLibrary.isPresent()) {
             throw new LibraryNotFoundException( "library not found" );
-        }else if(optionalLibrary.get().getCopies().size() > 0 ){
-            throw new ImpossibleDeleteLibraryException("This library " + id + " have existing copies");
+        } else if (optionalLibrary.get().getCopies().size() > 0) {
+            throw new ImpossibleDeleteLibraryException( "This library " + id + " have existing copies" );
         }
         try {
             libraryRepository.deleteById( id );
@@ -99,14 +99,8 @@ public class LibraryServiceImpl implements LibraryService {
 
 
     @Override
-    public List<LibraryDto> findByAddress(AddressDto address) {
-        return null;
-    }
-
-
-    @Override
-    public Set<CopyDto> findCopiesByLibraryId(Long id){
-        LibraryDto libraryDto = findById( id );
+    public Set<CopyDto> findCopiesByLibraryId(Long id) {
+        LibraryDto libraryDto=findById( id );
         return libraryDto.getCopyDtos();
     }
 
@@ -124,18 +118,18 @@ public class LibraryServiceImpl implements LibraryService {
                 copyDto.setId( copy.getId() );
                 copyDto.setAvailable( copy.isAvailable() );
 
-                    BookDto bookDto = new BookDto();
-                    bookDto.setBookId( copy.getBook().getBookId() );
-                    bookDto.setTitle( copy.getBook().getTitle() );
-                    bookDto.setIsbn(copy.getBook().getIsbn());
-                    bookDto.setSummary( copy.getBook().getSummary() );
+                BookDto bookDto=new BookDto();
+                bookDto.setBookId( copy.getBook().getBookId() );
+                bookDto.setTitle( copy.getBook().getTitle() );
+                bookDto.setIsbn( copy.getBook().getIsbn() );
+                bookDto.setSummary( copy.getBook().getSummary() );
 
-                        AuthorDto authorDto = new AuthorDto();
-                        authorDto.setAuthorId( copy.getBook().getAuthor().getAuthorId());
-                        authorDto.setLastName( copy.getBook().getAuthor().getLastName() );
-                        authorDto.setFirstName( copy.getBook().getAuthor().getFirstName() );
+                AuthorDto authorDto=new AuthorDto();
+                authorDto.setAuthorId( copy.getBook().getAuthor().getAuthorId() );
+                authorDto.setLastName( copy.getBook().getAuthor().getLastName() );
+                authorDto.setFirstName( copy.getBook().getAuthor().getFirstName() );
 
-                    bookDto.setAuthorDto(authorDto);
+                bookDto.setAuthorDto( authorDto );
 
 
                 copyDto.setBookDto( bookDto );
@@ -159,7 +153,6 @@ public class LibraryServiceImpl implements LibraryService {
         library.setPhoneNumber( libraryDto.getPhoneNumber() );
 
 
-
         Set<Copy> copies=new HashSet<>();
         if (libraryDto.getCopyDtos() != null) {
             for (CopyDto copyDto : libraryDto.getCopyDtos()) {
@@ -168,21 +161,21 @@ public class LibraryServiceImpl implements LibraryService {
                 copy.setAvailable( copyDto.isAvailable() );
                 copies.add( copy );
 
-                    Book book = new Book();
-                    book.setBookId( copyDto.getBookDto().getBookId() );
-                    book.setTitle( copyDto.getBookDto().getTitle() );
-                    book.setIsbn(copyDto.getBookDto().getIsbn());
-                    book.setSummary( copyDto.getBookDto().getSummary() );
+                Book book=new Book();
+                book.setBookId( copyDto.getBookDto().getBookId() );
+                book.setTitle( copyDto.getBookDto().getTitle() );
+                book.setIsbn( copyDto.getBookDto().getIsbn() );
+                book.setSummary( copyDto.getBookDto().getSummary() );
 
-                        Author author = new Author();
-                        author.setAuthorId( copyDto.getBookDto().getAuthorDto().getAuthorId());
-                        author.setLastName( copyDto.getBookDto().getAuthorDto().getLastName() );
-                        author.setFirstName( copyDto.getBookDto().getAuthorDto().getFirstName() );
+                Author author=new Author();
+                author.setAuthorId( copyDto.getBookDto().getAuthorDto().getAuthorId() );
+                author.setLastName( copyDto.getBookDto().getAuthorDto().getLastName() );
+                author.setFirstName( copyDto.getBookDto().getAuthorDto().getFirstName() );
 
-                    book.setAuthor(author);
+                book.setAuthor( author );
 
 
-                copy.setBook(book);
+                copy.setBook( book );
 
 
                 copies.add( copy );
@@ -198,8 +191,8 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
 
-    private AddressDto makeAddressDto(Address address){
-        AddressDto addressDto = new AddressDto();
+    private AddressDto makeAddressDto(Address address) {
+        AddressDto addressDto=new AddressDto();
         addressDto.setNumber( address.getNumber() );
         addressDto.setStreet( address.getStreet() );
         addressDto.setZipCode( address.getZipCode() );
@@ -207,10 +200,10 @@ public class LibraryServiceImpl implements LibraryService {
         return addressDto;
     }
 
-    private Address makeAddress(AddressDto addressDto){
-        Address address = new Address();
+    private Address makeAddress(AddressDto addressDto) {
+        Address address=new Address();
         address.setNumber( addressDto.getNumber() );
-        address.setStreet( addressDto.getStreet());
+        address.setStreet( addressDto.getStreet() );
         address.setZipCode( addressDto.getZipCode() );
         address.setCity( addressDto.getCity() );
         return address;

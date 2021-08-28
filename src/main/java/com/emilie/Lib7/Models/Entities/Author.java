@@ -16,9 +16,9 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name="author")
 @EqualsAndHashCode(exclude="books")
-public class Author implements Serializable{
+public class Author implements Serializable {
 
-    public static final long serialVersionUID = 1L;
+    public static final long serialVersionUID=1L;
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -36,9 +36,6 @@ public class Author implements Serializable{
 
     @OneToMany(mappedBy="author")
     @JsonIgnoreProperties("authors")
-    private Set<Book> books ;
-
-
-
+    private Set<Book> books;
 
 }

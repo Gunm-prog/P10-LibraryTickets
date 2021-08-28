@@ -13,8 +13,6 @@ import java.util.Collection;
 @NoArgsConstructor
 public class UserJwtDto implements UserDetails {
 
-
-
     private String username;
     private String password;
 
@@ -44,7 +42,4 @@ public class UserJwtDto implements UserDetails {
     }
 
 
-   /* public UserJwtDto(UserRepository userAUthenticationRepository) {
-        super( userAUthenticationRepository );
-    }*/
 }
